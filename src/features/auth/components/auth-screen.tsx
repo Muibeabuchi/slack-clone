@@ -11,9 +11,9 @@ export const AuthScreen = () => {
     <div className="h-full flex justify-center items-center bg-[#5c3d58]">
       <div className="md:h-auto md:w-[420px]">
         {state === "signIn" ? (
-          <SignInCard setState={setState} />
+          <SignInCard setState={setState} flow={state} />
         ) : (
-          <SignUpCard setState={setState} />
+          <SignUpCard setState={setState} flow={state} />
         )}
       </div>
     </div>

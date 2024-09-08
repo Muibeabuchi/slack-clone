@@ -24,7 +24,7 @@ const SignInCard = ({ setState }: SignInCardProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleProviderSignIn = (value: "github" | "github") => {
+  const handleProviderSignIn = (value: "github" | "google") => {
     void signIn(value);
   };
 
@@ -69,7 +69,7 @@ const SignInCard = ({ setState }: SignInCardProps) => {
             className="w-full relative"
             disabled={false}
             variant={"outline"}
-            onClick={() => {}}
+            onClick={() => handleProviderSignIn("google")}
           >
             <FcGoogle className="absolute size-5 left-2.5 top-2.5" />
             Continue with Google

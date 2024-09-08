@@ -23,9 +23,11 @@ const SignInCard = ({ setState }: SignInCardProps) => {
   const { signIn } = useAuthActions();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [authPending, setauthPending] = useState(false);
 
   const handleProviderSignIn = (value: "github" | "google") => {
-    void signIn(value);
+    setauthPending(true);
+    void signIn(value).then(() => setauthPending(false));
   };
 
   return (
@@ -39,7 +41,7 @@ const SignInCard = ({ setState }: SignInCardProps) => {
       <CardContent className="space-y-5 px-0 pb-0">
         <form className="space-y-2.5">
           <Input
-            disabled={false}
+            disabled={authPending}
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
@@ -49,7 +51,7 @@ const SignInCard = ({ setState }: SignInCardProps) => {
             required
           />
           <Input
-            disabled={false}
+            disabled={authPending}
             value={password}
             onChange={(e) => {
               setPassword(e.target.value);
@@ -58,7 +60,12 @@ const SignInCard = ({ setState }: SignInCardProps) => {
             type="password"
             required
           />
-          <Button type="submit" className="w-full" size={"lg"} disabled={false}>
+          <Button
+            type="submit"
+            className="w-full"
+            size={"lg"}
+            disabled={authPending}
+          >
             Continue
           </Button>
         </form>
@@ -67,7 +74,7 @@ const SignInCard = ({ setState }: SignInCardProps) => {
           <Button
             size="lg"
             className="w-full relative"
-            disabled={false}
+            disabled={authPending}
             variant={"outline"}
             onClick={() => handleProviderSignIn("google")}
           >
@@ -77,7 +84,7 @@ const SignInCard = ({ setState }: SignInCardProps) => {
           <Button
             size="lg"
             className="w-full relative"
-            disabled={false}
+            disabled={authPending}
             variant={"outline"}
             onClick={() => handleProviderSignIn("github")}
           >

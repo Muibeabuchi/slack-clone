@@ -17,11 +17,10 @@ export default function Home() {
   useEffect(() => {
     if (isLoading) return;
     if (workSpaceId) {
-      // router.push(`/workspace/${workSpaceId}`);
-      // console.log("redirecting to");
+      router.replace(`/workspace/${workSpaceId}`);
     } else if (!open) {
       setOpen(true);
-      // console.log("opening the creation modal");
+      console.log("opening the creation modal");
     }
   }, [isLoading, workSpaceId, open, setOpen, router]);
   return (

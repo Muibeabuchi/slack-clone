@@ -20,10 +20,10 @@ export const useCreateWorkSpaces = () => {
   const [error, setError] = useState<Error | null>(null);
 
   const [status, setStatus] = useState<
-    "succes" | "error" | "settled" | "pending" | null
+    "success" | "error" | "settled" | "pending" | null
   >(null);
 
-  const isSuccess = useMemo(() => status === "succes", [status]);
+  const isSuccess = useMemo(() => status === "success", [status]);
   const isPending = useMemo(() => status === "pending", [status]);
   const isSettled = useMemo(() => status === "settled", [status]);
   const isError = useMemo(() => status === "error", [status]);
@@ -47,7 +47,7 @@ export const useCreateWorkSpaces = () => {
         const response = await mutation(values);
         options?.onSuccess?.(response);
         setData(response);
-        setStatus("succes");
+        setStatus("success");
         // setIsError(false);
 
         return response;

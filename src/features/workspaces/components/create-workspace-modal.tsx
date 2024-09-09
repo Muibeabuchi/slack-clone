@@ -3,38 +3,40 @@
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { useCreateWorkSpaceModal } from "../store/use-create-workspace-modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCreateWorkSpaces } from "../api/use-create-workspace";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export const CreateWorkSpaceModal = () => {
+  const router = useRouter();
   const [open, setOpen] = useCreateWorkSpaceModal();
-  const { mutate } = useCreateWorkSpaces();
+  const [workspaceName, setWorkspaceName] = useState("");
+  const { mutate, isPending } = useCreateWorkSpaces();
 
   const handleClose = () => {
-    // await mutate();
     setOpen(false);
     // todo:clear the form
   };
 
-  const handleSubmit = async () => {
-    const response = await mutate(
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!workspaceName) return;
+    mutate(
+      // remove whitspace from the workspace name
+      { name: workspaceName.trim() },
       {
-        name: "Workspace 1",
-      },
-      {
-        onSuccess(data) {
+        onSuccess(id) {
           // redirect to workspace id
+          // setOpen(false);
+          handleClose();
+          router.push(`/workspace/${id}`);
         },
-        onError(error) {},
-        onSettled() {},
       }
     );
   };
@@ -45,17 +47,17 @@ export const CreateWorkSpaceModal = () => {
         <DialogHeader>
           <DialogTitle>Add a Workspace</DialogTitle>
         </DialogHeader>
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <Input
-            value=""
-            disabled={false}
+            value={workspaceName}
+            disabled={isPending}
             autoFocus
             required
             placeholder="Workspace name e.g. 'Work','Personal','Home'"
-            onChange={() => {}}
+            onChange={(e) => setWorkspaceName(e.target.value)}
           />
           <div className="flex justify-end">
-            <Button disabled={false}>Create</Button>
+            <Button disabled={isPending}>Create</Button>
           </div>
         </form>
       </DialogContent>

@@ -1,13 +1,19 @@
-import { Id } from "../../../../convex/_generated/dataModel";
+"use client";
 
-interface WorkspaceIdProps {
-  params: {
-    workspaceId: Id<"workspaces">;
-  };
-}
+import { useWorkspaceId } from "@/app/hooks/use-workspace-id";
+import useGetWorkspace from "@/features/workspaces/api/use-get-workspace";
 
-const WorkspaceIdPage = ({ params }: WorkspaceIdProps) => {
-  return <div>page:{params.workspaceId}</div>;
+// interface WorkspaceIdProps {
+//   params: {
+//     workspaceId: Id<"workspaces">;
+//   };
+// }
+
+const WorkspaceIdPage = () => {
+  const workspaceId = useWorkspaceId();
+  const { data, isLoading } = useGetWorkspace(workspaceId);
+
+  return <div>page:{JSON.stringify(data)}</div>;
 };
 
 export default WorkspaceIdPage;

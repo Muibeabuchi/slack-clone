@@ -11,7 +11,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
+  // DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useCreateWorkSpaceModal } from "@/features/workspaces/store/use-create-workspace-modal";
@@ -35,19 +35,17 @@ export default function WorkspaceSwitcher() {
           {workspaceLoading ? (
             <Loader className="size-5 animate-spin shrink-0" />
           ) : (
-            <p className="truncate">
-              {workspace?.name.charAt(0).toUpperCase()}
-            </p>
+            <p>{workspace?.name.charAt(0).toUpperCase()}</p>
           )}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-64" side="bottom" align="center">
         <DropdownMenuItem
           onClick={() => router.push(`/workspace/${workspaceId}`)}
-          className="cursor-pointer items-start capitalize flex-col justify-start"
+          className="cursor-pointer truncate items-start capitalize flex-col justify-start"
         >
           {workspace?.name}
-          <span className="text-xs text-muted-foreground">
+          <span className="text-xs  text-muted-foreground">
             Active Workspace
           </span>
         </DropdownMenuItem>
@@ -55,13 +53,13 @@ export default function WorkspaceSwitcher() {
           return (
             <DropdownMenuItem
               className="cursor-pointer capitalize"
-              onClick={() => router.push(`/workspace/${workspace._id}`)}
-              key={workspace._id}
+              onClick={() => router.push(`/workspace/${workspace?._id}`)}
+              key={workspace?._id}
             >
               <div className="relative size-9 overflow-hidden bg-[#616061] text-white font-semibold text-xl rounded-md  flex items-center justify-center mr-2 ">
-                {workspace.name.charAt(0).toUpperCase()}
+                {workspace?.name.charAt(0).toUpperCase()}
               </div>
-              <p className="truncate">{workspace.name}</p>
+              <p className="truncate text-ellipsis">{workspace?.name}</p>
             </DropdownMenuItem>
           );
         })}

@@ -19,6 +19,11 @@ export const create = mutation({
       name,
       userId,
     });
+    await ctx.db.insert("members", {
+      role: "admin",
+      userId,
+      workspaceId,
+    });
     return workspaceId;
   },
 });
@@ -26,7 +31,26 @@ export const create = mutation({
 export const get = query({
   args: {},
   async handler(ctx) {
-    return await ctx.db.query("workspaces").collect();
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) throw new ConvexError("Unauthorized");
+
+    // find out where a user is a member in
+    const members = await ctx.db
+      .query("members")
+      .withIndex("by_user_id", (q) => q.eq("userId", userId))
+      .collect();
+    if (!members) {
+      throw new ConvexError("User has no memberships");
+    }
+    const workspaceIds = members.map((member) => member.workspaceId);
+
+    const userWorkspaces = await Promise.all(
+      workspaceIds.map(async (id) => {
+        return await ctx.db.get(id);
+      })
+    );
+
+    return userWorkspaces;
   },
 });
 

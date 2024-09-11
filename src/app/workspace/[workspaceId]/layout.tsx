@@ -10,6 +10,7 @@ import WorkspaceSwitcher from "./workspace-switcher";
 
 import { cookies } from "next/headers";
 import ResizeableSidebar from "@/features/workspaces/components/resizeable-panel";
+import WorkspaceSidebar from "./workspace-sidebar";
 
 interface WorkspaceLayoutProps {
   children: React.ReactNode;
@@ -44,7 +45,10 @@ const WorkspaceLayout = async ({
         <Sidebar>
           <WorkspaceSwitcher workspace={workspace} />
         </Sidebar>
-        <ResizeableSidebar defaultLayout={defaultLayout}>
+        <ResizeableSidebar
+          workspaceSidebar={<WorkspaceSidebar />}
+          defaultLayout={defaultLayout}
+        >
           {children}
         </ResizeableSidebar>
       </div>

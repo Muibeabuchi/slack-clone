@@ -62,6 +62,16 @@ export const getById = query({
     const userId = await getAuthUserId(ctx);
     if (userId === null) throw new ConvexError("Unauthorized");
 
+    const isMember = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_user_id", (q) =>
+        q.eq("workspaceId", workspaceId).eq("userId", userId)
+      )
+      .unique();
+
+    if (isMember === null) {
+      return null;
+    }
     return await ctx.db.get(workspaceId);
   },
 });

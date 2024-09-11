@@ -5,6 +5,7 @@ import { fetchMutation } from "convex/nextjs";
 import { api } from "../../../../convex/_generated/api";
 import { z } from "zod";
 import { redirect } from "next/navigation";
+// import { revalidatePath } from "next/cache";
 
 export const createWorkspaceAction = createServerAction()
   .input(
@@ -22,6 +23,7 @@ export const createWorkspaceAction = createServerAction()
     );
 
     if (workspaceId) {
+      // revalidatePath("/");
       redirect(`/workspace/${workspaceId}`);
     }
   });

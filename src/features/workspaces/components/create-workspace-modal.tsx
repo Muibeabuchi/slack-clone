@@ -32,21 +32,6 @@ export const CreateWorkSpaceModal = () => {
     e.preventDefault();
     if (!workspaceName) return;
     await createWorkspace({ name: workspaceName.trim() });
-
-    // mutate(
-    //   // remove whitspace from the workspace name
-    //   { name: workspaceName.trim() },
-    //   {
-    //     onSuccess(id) {
-    //       // redirect to workspace id
-    //       // setOpen(false);
-    //       toast.success("Workspace created");
-    //       handleClose();
-    //       setWorkspaceName("");
-    //       router.push(`/workspace/${id}`);
-    //     },
-    //   }
-    // );
   };
 
   return (

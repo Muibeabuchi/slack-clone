@@ -8,6 +8,9 @@ import { redirect } from "next/navigation";
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
 import WorkspaceSwitcher from "./workspace-switcher";
 
+import { cookies } from "next/headers";
+import ResizeableSidebar from "@/features/workspaces/components/resizeable-panel";
+
 interface WorkspaceLayoutProps {
   children: React.ReactNode;
   params: {
@@ -19,6 +22,12 @@ const WorkspaceLayout = async ({
   children,
   params: { workspaceId },
 }: WorkspaceLayoutProps) => {
+  const layout = cookies().get("react-resizable-panels:layout");
+
+  let defaultLayout;
+  if (layout) {
+    defaultLayout = JSON.parse(layout.value);
+  }
   const workspace = await fetchQuery(
     api.workspaces.getById,
     { workspaceId },
@@ -27,7 +36,6 @@ const WorkspaceLayout = async ({
     }
   );
 
-  console.log(workspace);
   if (!workspace) redirect("/");
   return (
     <div className="">
@@ -36,7 +44,9 @@ const WorkspaceLayout = async ({
         <Sidebar>
           <WorkspaceSwitcher workspace={workspace} />
         </Sidebar>
-        {children}
+        <ResizeableSidebar defaultLayout={defaultLayout}>
+          {children}
+        </ResizeableSidebar>
       </div>
     </div>
   );

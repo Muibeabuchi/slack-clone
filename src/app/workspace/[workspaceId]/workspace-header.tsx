@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Doc } from "../../../../convex/_generated/dataModel";
-import { ChevronDownIcon } from "lucide-react";
+import { ChevronDownIcon, ListFilterIcon, SquarePenIcon } from "lucide-react";
 
 interface WorkspaceHeaderProps {
   workspace: Doc<"workspaces">;
@@ -63,6 +63,14 @@ export default function WorkspaceHeader({
           ) : null}
         </DropdownMenuContent>
       </DropdownMenu>
+      <div className="flex items-center gap-0.5">
+        <Button variant={"transparent"} size={"iconSm"}>
+          <SquarePenIcon className="size-4" />
+        </Button>
+        <Button variant={"transparent"} size={"iconSm"}>
+          <ListFilterIcon className="size-4" />
+        </Button>
+      </div>
     </div>
   );
 }

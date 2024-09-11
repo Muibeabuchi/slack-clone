@@ -29,10 +29,7 @@ export default function WorkspaceSwitcher({
   workspace,
 }: WorkspaceSwitcherProps) {
   const router = useRouter();
-  // const workspaceId = useWorkspaceId();
   const [, setOpen] = useCreateWorkSpaceModal();
-  // const { data: workspace, isLoading: workspaceLoading } =
-  //   useGetWorkspace(workspaceId);
   const { data: workspaces, isLoading: workspacesLoading } = useWorkSpaces();
 
   const filterWorkspaces = workspaces?.filter(
@@ -43,10 +40,6 @@ export default function WorkspaceSwitcher({
       <DropdownMenuTrigger asChild>
         <Button className="text-xl font-semi-bold overflow-hidden text-slate-800 relative bg-[#ABABAD] hover:bg-[#ABABAD]/80">
           <p>{workspace?.name.charAt(0).toUpperCase()}</p>
-          {/* {workspaceLoading ? (
-            <Loader className="size-5 animate-spin shrink-0" />
-          ) : (
-          )} */}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-64" side="bottom" align="center">

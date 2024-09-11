@@ -27,7 +27,6 @@ const WorkspaceLayout = async ({
     }
   );
 
-  console.log(workspace);
   if (!workspace) redirect("/");
   return (
     <div className="">

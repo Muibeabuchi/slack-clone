@@ -1,16 +1,16 @@
 import { fetchQuery } from "convex/nextjs";
 
-import Sidebar from "./sidebar";
-import Toolbar from "./toolbar";
+import Sidebar from "./_components/sidebar";
+import Toolbar from "./_components/toolbar";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { redirect } from "next/navigation";
 import { convexAuthNextjsToken } from "@convex-dev/auth/nextjs/server";
-import WorkspaceSwitcher from "./workspace-switcher";
+import WorkspaceSwitcher from "./_components/workspace-switcher";
 
 import { cookies } from "next/headers";
 import ResizeableSidebar from "@/features/workspaces/components/resizeable-panel";
-import WorkspaceSidebar from "./workspace-sidebar";
+import WorkspaceSidebar from "./_components/workspace-sidebar";
 
 interface WorkspaceLayoutProps {
   children: React.ReactNode;

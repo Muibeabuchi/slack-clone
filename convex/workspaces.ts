@@ -17,7 +17,7 @@ export const create = mutation({
   async handler(ctx, { name }) {
     const userId = await getAuthUserId(ctx);
     if (userId === null) {
-      throw new ConvexError("Unauthorized");
+      throw new ConvexError("Unauthenticated");
     }
     // todo: Create a proper method later
     const joincode = generateCode();
@@ -40,7 +40,7 @@ export const get = query({
   args: {},
   async handler(ctx) {
     const userId = await getAuthUserId(ctx);
-    if (userId === null) throw new ConvexError("Unauthorized");
+    if (userId === null) return null;
 
     // find out where a user is a member in
     const members = await ctx.db
@@ -48,7 +48,7 @@ export const get = query({
       .withIndex("by_user_id", (q) => q.eq("userId", userId))
       .collect();
     if (!members) {
-      throw new ConvexError("User has no memberships");
+      return null;
     }
     const workspaceIds = members.map((member) => member.workspaceId);
 
@@ -68,7 +68,7 @@ export const getById = query({
   },
   async handler(ctx, { workspaceId }) {
     const userId = await getAuthUserId(ctx);
-    if (userId === null) throw new ConvexError("Unauthorized");
+    if (userId === null) return null;
 
     const isMember = await ctx.db
       .query("members")
@@ -81,5 +81,72 @@ export const getById = query({
       return null;
     }
     return await ctx.db.get(workspaceId);
+  },
+});
+
+export const update = mutation({
+  args: { workspaceId: v.id("workspaces"), newWorkspaceName: v.string() },
+  async handler(ctx, { workspaceId, newWorkspaceName }) {
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) throw new ConvexError("Unauthenticated");
+
+    const member = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_user_id", (q) =>
+        q.eq("workspaceId", workspaceId).eq("userId", userId)
+      )
+      .unique();
+
+    if (!member || member.role === "member") {
+      throw new ConvexError("Unauthorized");
+    }
+
+    await ctx.db.patch(workspaceId, {
+      name: newWorkspaceName,
+    });
+
+    return workspaceId;
+
+    // check if the user is permitted to update this workspace
+    // if they are the admin then the action is permissible
+
+    // check if the user is the creator of the workspace
+  },
+});
+
+export const remove = mutation({
+  args: { workspaceId: v.id("workspaces") },
+  async handler(ctx, { workspaceId }) {
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) throw new ConvexError("Unauthenticated");
+
+    // check if the user is a member of the workspace
+    const member = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_user_id", (q) =>
+        q.eq("workspaceId", workspaceId).eq("userId", userId)
+      )
+      .unique();
+
+    if (!member || member.role === "member") {
+      throw new ConvexError("Unauthorized");
+    }
+
+    await ctx.db.delete(workspaceId);
+
+    // query all associated members in this workspace
+    const workspaceMembers = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id", (q) => q.eq("workspaceId", workspaceId))
+      .collect();
+
+    // delete all associated members in this workspace
+    await Promise.all(
+      workspaceMembers.map(async (member) => {
+        await ctx.db.delete(member._id);
+      })
+    );
+
+    return workspaceId;
   },
 });

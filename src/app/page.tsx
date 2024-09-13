@@ -24,9 +24,10 @@ export default async function Home() {
   // const { data, isLoading } = useWorkSpaces();
 
   return (
-    <div>
+    <div className="bg-pink-600 h-full">
       <ClientDedirect workspaceId={workspaceId} />
       <UserButton />
+      <p className="text-4xl text-orange-800 ">HOME PAGE</p>
     </div>
   );
 }

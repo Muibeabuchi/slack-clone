@@ -59,7 +59,7 @@ export default function WorkspaceHeader({
               <>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  className="cursor-pointer py-2"
+                  className="cursor-pointer py-2 truncate"
                   onClick={() => {}}
                 >
                   Invite People to {workspace.name}

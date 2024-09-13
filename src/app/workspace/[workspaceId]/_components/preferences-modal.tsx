@@ -71,7 +71,7 @@ export default function PreferenceModal({
       {
         onSuccess() {
           toast.success("Workspace removed");
-          router.replace(`/`);
+          router.replace("/");
         },
         onError() {
           toast.error("Failed to remove workspace");

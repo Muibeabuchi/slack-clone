@@ -5,15 +5,32 @@ import useCurrentMember from "@/features/members/api/use-current-member";
 import useGetWorkspace from "@/features/workspaces/api/use-get-workspace";
 import {
   AlertTriangleIcon,
+  HashIcon,
   Loader,
   MessageSquareTextIcon,
   SendHorizonalIcon,
 } from "lucide-react";
 import WorkspaceHeader from "./workspace-header";
 import { SidebarItem } from "./sidebar-item";
+import { Preloaded, usePreloadedQuery } from "convex/react";
+import { api } from "../../../../../convex/_generated/api";
+import { useGetChannels } from "@/features/channels/api/use-get-channels";
+import { WorkspaceSection } from "./workspace-section";
 
-export default function WorkspaceSidebar() {
+export default function WorkspaceSidebar({
+  channelsPreloadQuery,
+}: {
+  channelsPreloadQuery?: Preloaded<typeof api.channels.get> | string;
+}) {
   const workspaceId = useWorkspaceId();
+
+  // ?preload data from the server
+  // const channels = usePreloadedQuery(channelsPreloadQuery);
+
+  const { data: channels, isLoading: isLoadingChannels } = useGetChannels({
+    workspaceId,
+  });
+
   const { data: currentMember, isLoading: CurrentMemberLoading } =
     useCurrentMember({ workspaceId });
   const { data: workSpace, isLoading: WorkspaceLoading } =
@@ -53,6 +70,17 @@ export default function WorkspaceSidebar() {
           id="drafts"
         />
       </div>
+      <WorkspaceSection hint="New Channel" label="Channels" onNew={() => {}}>
+        {channels?.map((item) => (
+          <SidebarItem
+            key={item._id}
+            variant="default"
+            icon={HashIcon}
+            label={item?.chanelName}
+            id={item._id}
+          />
+        ))}
+      </WorkspaceSection>
     </div>
   );
 }

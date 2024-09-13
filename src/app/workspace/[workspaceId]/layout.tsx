@@ -1,4 +1,4 @@
-import { fetchQuery } from "convex/nextjs";
+import { fetchQuery, preloadQuery } from "convex/nextjs";
 
 import Sidebar from "./_components/sidebar";
 import Toolbar from "./_components/toolbar";
@@ -37,6 +37,16 @@ const WorkspaceLayout = async ({
     }
   );
 
+  // const channelsPreloadQuery = await preloadQuery(
+  //   api.channels.get,
+  //   {
+  //     workspaceId,
+  //   },
+  //   {
+  //     token: convexAuthNextjsToken(),
+  //   }
+  // );
+
   if (!workspace) redirect("/");
   return (
     <div className="">
@@ -46,7 +56,7 @@ const WorkspaceLayout = async ({
           <WorkspaceSwitcher workspace={workspace} />
         </Sidebar>
         <ResizeableSidebar
-          workspaceSidebar={<WorkspaceSidebar />}
+          workspaceSidebar={<WorkspaceSidebar channelsPreloadQuery={"chiki"} />}
           defaultLayout={defaultLayout}
         >
           {children}

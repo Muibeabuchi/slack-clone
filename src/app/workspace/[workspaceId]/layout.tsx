@@ -11,6 +11,8 @@ import WorkspaceSwitcher from "./_components/workspace-switcher";
 import { cookies } from "next/headers";
 import ResizeableSidebar from "@/features/workspaces/components/resizeable-panel";
 import WorkspaceSidebar from "./_components/workspace-sidebar";
+import { preloadCurrentMember } from "@/features/members/api/use-preload-current-member";
+import { preloadWorkspace } from "@/features/workspaces/api/use-preload-workspace";
 
 interface WorkspaceLayoutProps {
   children: React.ReactNode;
@@ -37,6 +39,10 @@ const WorkspaceLayout = async ({
     }
   );
 
+  // prefetch data for the workspaceSidebae component
+  const preloadedCurrentMember = await preloadCurrentMember(workspaceId);
+  const preloadedWorkspace = await preloadWorkspace(workspaceId);
+
   if (!workspace) redirect("/");
   return (
     <div className="">
@@ -46,7 +52,12 @@ const WorkspaceLayout = async ({
           <WorkspaceSwitcher workspace={workspace} />
         </Sidebar>
         <ResizeableSidebar
-          workspaceSidebar={<WorkspaceSidebar />}
+          workspaceSidebar={
+            <WorkspaceSidebar
+              preloadedWorkspace={preloadedWorkspace}
+              preloadedCurrentMember={preloadedCurrentMember}
+            />
+          }
           defaultLayout={defaultLayout}
         >
           {children}

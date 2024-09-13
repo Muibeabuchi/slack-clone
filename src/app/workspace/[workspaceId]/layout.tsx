@@ -37,15 +37,15 @@ const WorkspaceLayout = async ({
     }
   );
 
-  // const channelsPreloadQuery = await preloadQuery(
-  //   api.channels.get,
-  //   {
-  //     workspaceId,
-  //   },
-  //   {
-  //     token: convexAuthNextjsToken(),
-  //   }
-  // );
+  const channelsPreloadQuery = await preloadQuery(
+    api.channels.get,
+    {
+      workspaceId,
+    },
+    {
+      token: convexAuthNextjsToken(),
+    }
+  );
 
   if (!workspace) redirect("/");
   return (
@@ -56,7 +56,9 @@ const WorkspaceLayout = async ({
           <WorkspaceSwitcher workspace={workspace} />
         </Sidebar>
         <ResizeableSidebar
-          workspaceSidebar={<WorkspaceSidebar channelsPreloadQuery={"chiki"} />}
+          workspaceSidebar={
+            <WorkspaceSidebar channelsPreloadQuery={channelsPreloadQuery} />
+          }
           defaultLayout={defaultLayout}
         >
           {children}

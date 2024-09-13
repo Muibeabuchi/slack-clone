@@ -69,7 +69,7 @@ export default function WorkspaceSwitcher({
               onClick={() => router.push(`/workspace/${workspace?._id}`)}
               key={workspace?._id}
             >
-              <div className="relative size-9 overflow-hidden bg-[#616061] text-white font-semibold text-xl rounded-md  flex items-center justify-center mr-2 ">
+              <div className="relative size-9 overflow-hidden bg-[#616061] text-white font-semibold text-xl rounded-md  flex items-center justify-center mr-2 shrink-0">
                 {workspace?.name.charAt(0).toUpperCase()}
               </div>
               <p className="truncate text-ellipsis">{workspace?.name}</p>

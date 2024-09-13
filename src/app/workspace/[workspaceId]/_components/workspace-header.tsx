@@ -44,12 +44,14 @@ export default function WorkspaceHeader({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-64" side="bottom" align="start">
-            <DropdownMenuItem className="cursor-pointer capitalize">
-              <div className="size-9 text-white font-semibold text-xl rounded-md flex items-center justify-center mr-2 relative overflow-hidden bg-[#616061]">
+            <DropdownMenuItem className="cursor-pointer overflow-hidden capitalize">
+              <div className="size-9 shrink-0 text-white font-semibold text-xl rounded-md flex items-center justify-center mr-2 relative overflow-hidden bg-[#616061]">
                 {workspace.name.charAt(0).toUpperCase()}
               </div>
-              <div className="flex flex-col items-start">
-                <p className="font-bold">{workspace.name}</p>
+              <div className="flex flex-col items-start truncate overflow-hidden">
+                <span className="font-bold truncate overflow-hidden ">
+                  {workspace.name}
+                </span>
                 <p className="text-xs text-muted-foreground">
                   Active Workspace
                 </p>
@@ -59,10 +61,11 @@ export default function WorkspaceHeader({
               <>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  className="cursor-pointer py-2"
+                  className="cursor-pointer py-2 truncate"
                   onClick={() => {}}
                 >
-                  Invite People to {workspace.name}
+                  Invite People to
+                  {workspace.name}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem

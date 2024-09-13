@@ -19,7 +19,7 @@ import {
   Plus,
   //  Loader,
 } from "lucide-react";
-import { Doc } from "../../../../convex/_generated/dataModel";
+import { Doc } from "../../../../../convex/_generated/dataModel";
 
 interface WorkspaceSwitcherProps {
   workspace: Doc<"workspaces">;
@@ -33,7 +33,10 @@ export default function WorkspaceSwitcher({
   const [, setOpen] = useCreateWorkSpaceModal();
   // const { data: workspace, isLoading: workspaceLoading } =
   //   useGetWorkspace(workspaceId);
-  const { data: workspaces, isLoading: workspacesLoading } = useWorkSpaces();
+  const {
+    data: workspaces,
+    //  isLoading: workspacesLoading
+  } = useWorkSpaces();
 
   const filterWorkspaces = workspaces?.filter(
     (item) => item?._id !== workspace?._id

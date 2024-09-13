@@ -1,6 +1,6 @@
 "use client";
 
-import { useWorkspaceId } from "@/app/hooks/use-workspace-id";
+import { useWorkspaceId } from "@/hooks/use-workspace-id";
 // import { useEffect } from "react";
 
 // interface WorkspaceIdProps {

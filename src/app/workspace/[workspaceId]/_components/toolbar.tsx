@@ -1,6 +1,6 @@
 "use client";
 
-import { useWorkspaceId } from "@/app/hooks/use-workspace-id";
+import { useWorkspaceId } from "@/hooks/use-workspace-id";
 import { Button } from "@/components/ui/button";
 import useGetWorkspace from "@/features/workspaces/api/use-get-workspace";
 import { Info, Search } from "lucide-react";

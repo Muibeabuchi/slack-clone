@@ -1,6 +1,6 @@
 "use client";
 
-import { useWorkspaceId } from "@/app/hooks/use-workspace-id";
+import { useWorkspaceId } from "@/hooks/use-workspace-id";
 import useCurrentMember from "@/features/members/api/use-current-member";
 import useGetWorkspace from "@/features/workspaces/api/use-get-workspace";
 import { AlertTriangleIcon, Loader } from "lucide-react";

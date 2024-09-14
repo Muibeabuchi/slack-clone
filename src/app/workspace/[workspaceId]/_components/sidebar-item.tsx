@@ -7,6 +7,7 @@ import { useWorkspaceId } from "@/hooks/use-workspace-id";
 
 import { cva, VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
+import { Id } from "../../../../../convex/_generated/dataModel";
 
 const sidebarItemVariants = cva(
   "flex items-center justify-start font-normal h-7 px-[18px] gap-1.5 text-sm overflow-hidden",
@@ -24,8 +25,8 @@ const sidebarItemVariants = cva(
 );
 
 interface SidebarItemProps {
-  label: string;
-  id: string;
+  label?: string;
+  id?: Id<"workspaces"> | string;
   icon: IconType | LucideIcon;
   variant?: VariantProps<typeof sidebarItemVariants>["variant"];
 }

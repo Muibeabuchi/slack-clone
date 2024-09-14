@@ -37,6 +37,15 @@ const WorkspaceLayout = async ({
     }
   );
 
+  const membersPreloadQuery = await preloadQuery(
+    api.members.workspaceMembers,
+    {
+      workspaceId,
+    },
+    {
+      token: convexAuthNextjsToken(),
+    }
+  );
   const channelsPreloadQuery = await preloadQuery(
     api.channels.get,
     {
@@ -57,7 +66,10 @@ const WorkspaceLayout = async ({
         </Sidebar>
         <ResizeableSidebar
           workspaceSidebar={
-            <WorkspaceSidebar channelsPreloadQuery={channelsPreloadQuery} />
+            <WorkspaceSidebar
+              membersPreloadQuery={membersPreloadQuery}
+              channelsPreloadQuery={channelsPreloadQuery}
+            />
           }
           defaultLayout={defaultLayout}
         >

@@ -16,16 +16,23 @@ import { Preloaded, usePreloadedQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
 // import { useGetChannels } from "@/features/channels/api/use-get-channels";
 import { WorkspaceSection } from "./workspace-section";
+import UserItem from "./user-item";
 
 export default function WorkspaceSidebar({
   channelsPreloadQuery,
+  membersPreloadQuery,
 }: {
   channelsPreloadQuery: Preloaded<typeof api.channels.get>;
+  membersPreloadQuery: Preloaded<typeof api.members.workspaceMembers>;
 }) {
   const workspaceId = useWorkspaceId();
 
-  // ?preload data from the server
+  // ?preload channels data from the server
   const channels = usePreloadedQuery(channelsPreloadQuery);
+  // ?preload workspaceMemebers data from the server
+  const members = usePreloadedQuery(membersPreloadQuery);
+
+  console.log(members);
 
   // const { data: channels, isLoading: isLoadingChannels } = useGetChannels({
   //   workspaceId,
@@ -81,14 +88,14 @@ export default function WorkspaceSidebar({
           />
         ))}
       </WorkspaceSection>
-      <WorkspaceSection hint="Members" label="Direct Messages">
-        {channels?.map((item) => (
-          <SidebarItem
-            key={item._id}
-            variant="default"
-            icon={HashIcon}
-            label={item?.chanelName}
+      <WorkspaceSection hint="New Direct message" label="Direct Messages">
+        {members?.map((item) => (
+          <UserItem
             id={item._id}
+            image={item.userData?.image}
+            key={item._id}
+            label={item.userData?.name}
+            // variant={"active"}
           />
         ))}
       </WorkspaceSection>

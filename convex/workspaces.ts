@@ -196,3 +196,38 @@ export const newJoinCode = mutation({
     return joincode;
   },
 });
+
+export const join = mutation({
+  args: { joinCode: v.string(), workspaceId: v.id("workspaces") },
+  async handler(ctx, { joinCode, workspaceId }) {
+    // check if the user is authenticated
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) throw new ConvexError("Unauthenticated");
+
+    // checki f the workspace exists
+    const workspace = await ctx.db.get(workspaceId);
+    if (!workspace) throw new ConvexError("This workspace does not exist");
+
+    if (workspace.joincode !== joinCode.toLowerCase())
+      throw new ConvexError("Invalid join code");
+
+    // check if the user is an existing member ----pretty nice edge case
+    const existingMember = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_user_id", (q) =>
+        q.eq("workspaceId", workspaceId).eq("userId", userId)
+      )
+      .unique();
+
+    if (existingMember) {
+      throw new ConvexError("Already a member of this workspace");
+    }
+
+    // add the user as a member to the workspace
+    return await ctx.db.insert("members", {
+      userId,
+      workspaceId,
+      role: "member",
+    });
+  },
+});

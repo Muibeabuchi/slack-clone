@@ -187,9 +187,12 @@ export const newJoinCode = mutation({
       return checkNewCode();
     };
 
+    const joincode = checkNewCode();
+
     // patch the current joincode field of the workspace
-    return await ctx.db.patch(workspaceId, {
-      joincode: checkNewCode(),
+    await ctx.db.patch(workspaceId, {
+      joincode,
     });
+    return joincode;
   },
 });

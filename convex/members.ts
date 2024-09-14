@@ -39,7 +39,7 @@ export const workspaceMembers = query({
       .withIndex("by_workspace_id_user_id", (q) =>
         q.eq("workspaceId", args.workspaceId).eq("userId", userId)
       )
-      .first();
+      .unique();
 
     if (!isMember) return [];
 

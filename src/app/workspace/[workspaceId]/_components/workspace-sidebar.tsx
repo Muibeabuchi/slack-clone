@@ -17,6 +17,7 @@ import { api } from "../../../../../convex/_generated/api";
 // import { useGetChannels } from "@/features/channels/api/use-get-channels";
 import { WorkspaceSection } from "./workspace-section";
 import UserItem from "./user-item";
+import { useCreateChannelModal } from "@/features/channels/store/use-create-channel-modal";
 
 export default function WorkspaceSidebar({
   channelsPreloadQuery,
@@ -32,11 +33,11 @@ export default function WorkspaceSidebar({
   // ?preload workspaceMemebers data from the server
   const members = usePreloadedQuery(membersPreloadQuery);
 
-  console.log(members);
-
   // const { data: channels, isLoading: isLoadingChannels } = useGetChannels({
   //   workspaceId,
   // });
+
+  const [, setOpen] = useCreateChannelModal();
 
   const { data: currentMember, isLoading: CurrentMemberLoading } =
     useCurrentMember({ workspaceId });
@@ -77,7 +78,11 @@ export default function WorkspaceSidebar({
           id="drafts"
         />
       </div>
-      <WorkspaceSection hint="New Channel" label="Channels" onNew={() => {}}>
+      <WorkspaceSection
+        hint="New Channel"
+        label="Channels"
+        onNew={currentMember.role === "admin" ? () => setOpen(true) : undefined}
+      >
         {channels?.map((item) => (
           <SidebarItem
             key={item._id}

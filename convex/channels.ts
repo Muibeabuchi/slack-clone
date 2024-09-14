@@ -1,5 +1,5 @@
-import { v } from "convex/values";
-import { query } from "./_generated/server";
+import { ConvexError, v } from "convex/values";
+import { mutation, query } from "./_generated/server";
 import { getAuthUserId } from "@convex-dev/auth/server";
 
 export const get = query({
@@ -22,5 +22,36 @@ export const get = query({
       .query("channels")
       .withIndex("by_workspaceId", (q) => q.eq("workspaceId", workspaceId))
       .collect();
+  },
+});
+
+export const create = mutation({
+  args: { channelName: v.string(), workspaceId: v.id("workspaces") },
+  async handler(ctx, { channelName, workspaceId }) {
+    // check if the user is authenticated
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) throw new ConvexError("Unauthorized");
+
+    // check if the user is an admin of the workspace
+    const isMember = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_user_id", (q) =>
+        q.eq("workspaceId", workspaceId).eq("userId", userId)
+      )
+      .unique();
+
+    if (!isMember || isMember.role === "member")
+      throw new ConvexError("Unauthorized");
+
+    // ?check if the workspace name is a duplicate
+
+    // parse the value to name to strip backspaces and repplace with dashes
+    const parsedChannelName = channelName.replace(/\s+/g, "-");
+    // insert new channel into the workspace
+
+    return await ctx.db.insert("channels", {
+      chanelName: parsedChannelName,
+      workspaceId,
+    });
   },
 });

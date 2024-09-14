@@ -157,3 +157,39 @@ export const remove = mutation({
     return workspaceId;
   },
 });
+
+export const newJoinCode = mutation({
+  args: { workspaceId: v.id("workspaces") },
+  async handler(ctx, { workspaceId }) {
+    // check if the user is authenticated
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) throw new ConvexError("Unauthenticated");
+
+    // check if the user is a member and admin of the workspace
+    const member = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_user_id", (q) =>
+        q.eq("workspaceId", workspaceId).eq("userId", userId)
+      )
+      .unique();
+
+    if (!member || member.role === "member") {
+      throw new ConvexError("Unauthorized");
+    }
+
+    // ?should probably check if the previous code is equals to the new generated code
+    const workspace = await ctx.db.get(workspaceId);
+    if (!workspace) throw new ConvexError("Workspace does not exist");
+    const checkNewCode = () => {
+      //create a new joincode
+      const newCode = generateCode();
+      if (workspace.joincode !== newCode) return newCode;
+      return checkNewCode();
+    };
+
+    // patch the current joincode field of the workspace
+    return await ctx.db.patch(workspaceId, {
+      joincode: checkNewCode(),
+    });
+  },
+});

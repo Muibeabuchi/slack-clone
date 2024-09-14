@@ -88,7 +88,11 @@ export default function WorkspaceSidebar({
           />
         ))}
       </WorkspaceSection>
-      <WorkspaceSection hint="New Direct message" label="Direct Messages">
+      <WorkspaceSection
+        hint="New Direct message"
+        label="Direct Messages"
+        onNew={() => {}}
+      >
         {members?.map((item) => (
           <UserItem
             id={item._id}

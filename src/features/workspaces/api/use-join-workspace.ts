@@ -4,7 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { Id } from "../../../../convex/_generated/dataModel";
 
 type RequestType = { workspaceId: Id<"workspaces">; joinCode: string };
-type ResponseType = Id<"members"> | null;
+type ResponseType = { workspaceId: Id<"workspaces"> } | null;
 
 type Options = {
   onSuccess?: (data: ResponseType) => void;

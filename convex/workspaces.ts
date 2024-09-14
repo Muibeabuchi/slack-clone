@@ -224,10 +224,37 @@ export const join = mutation({
     }
 
     // add the user as a member to the workspace
-    return await ctx.db.insert("members", {
+    await ctx.db.insert("members", {
       userId,
       workspaceId,
       role: "member",
     });
+
+    return {
+      workspaceId,
+    };
+  },
+});
+
+export const getWorkspaceInfo = query({
+  args: { workspaceId: v.id("workspaces") },
+  async handler(ctx, { workspaceId }) {
+    // check if the user is authenticated
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) throw new ConvexError("Unauthenticated");
+
+    const member = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_user_id", (q) =>
+        q.eq("workspaceId", workspaceId).eq("userId", userId)
+      )
+      .unique();
+
+    const workspace = await ctx.db.get(workspaceId);
+
+    return {
+      workspaceName: workspace?.name,
+      isMember: !!member,
+    };
   },
 });

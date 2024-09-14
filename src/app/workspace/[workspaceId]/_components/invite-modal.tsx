@@ -1,16 +1,16 @@
-// import { useClipboard } from "@reactuses/core";
-
 import { Button } from "@/components/ui/button";
 
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useUpdateWorkSpaceJoincode } from "@/features/workspaces/api/use-update-workspace-joicode";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
 import { DialogDescription } from "@radix-ui/react-dialog";
-import { CopyIcon } from "lucide-react";
+import { CopyIcon, RefreshCcwIcon } from "lucide-react";
 import { toast } from "sonner";
 
 interface InviteModalProps {
@@ -28,6 +28,25 @@ export default function InviteModal({
 }: InviteModalProps) {
   //   const [] = useClipboard();
   const workspaceId = useWorkspaceId();
+  const { mutate: updateJoincode, isPending: updatingJoincode } =
+    useUpdateWorkSpaceJoincode();
+  const handleNewcode = () => {
+    updateJoincode(
+      {
+        workspaceId,
+      },
+      {
+        onSuccess() {
+          toast.success(
+            `Joincode for ${workspaceName} workspace has been updated`
+          );
+        },
+        onError() {
+          toast.error("there was an error updating the joincode. Try again ");
+        },
+      }
+    );
+  };
   const handleCopy = () => {
     const inviteLink = `${window.location.origin}/join/${workspaceId}`;
     navigator.clipboard
@@ -53,6 +72,19 @@ export default function InviteModal({
             Copy Link
             <CopyIcon className="size-4 ml-2" />
           </Button>
+        </div>
+        <div className="flex items-center justify-between w-full">
+          <Button
+            variant="outline"
+            onClick={handleNewcode}
+            disabled={updatingJoincode}
+          >
+            New Code
+            <RefreshCcwIcon className="size-4 ml-2" />
+          </Button>
+          <DialogClose asChild disabled={updatingJoincode}>
+            <Button>Close</Button>
+          </DialogClose>
         </div>
       </DialogContent>
     </Dialog>

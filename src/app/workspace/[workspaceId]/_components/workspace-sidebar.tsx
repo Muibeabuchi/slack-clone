@@ -39,6 +39,7 @@ export default function WorkspaceSidebar({
 
   const [, setOpen] = useCreateChannelModal();
 
+  // TODO: CHANGE THIS APIS TO PRELOAD ON THE SERVER
   const { data: currentMember, isLoading: CurrentMemberLoading } =
     useCurrentMember({ workspaceId });
   const { data: workSpace, isLoading: WorkspaceLoading } =

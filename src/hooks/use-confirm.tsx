@@ -1,17 +1,13 @@
 import { useState } from "react";
 
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  //   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
 export const useConfirm = (title: string, message: string) => {
@@ -38,24 +34,28 @@ export const useConfirm = (title: string, message: string) => {
 
   const ConfirmDialog = () => {
     return (
-      <AlertDialog open={promise !== null}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{title}</AlertDialogTitle>
-            <AlertDialogDescription>{message}</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="pt-2">
-            <AlertDialogCancel asChild>
-              <Button onClick={handleCancel} variant={"outline"}>
-                Cancel
-              </Button>
-            </AlertDialogCancel>
-            <AlertDialogAction asChild>
-              <Button onClick={handleConfirm}>Confirm</Button>
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <Dialog
+        open={promise !== null}
+        // onOpenChange={() => setPromise(null)}
+        // modal={true}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{title}</DialogTitle>
+            <DialogDescription>{message}</DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="pt-2">
+            {/* <DialogCancel asChild> */}
+            <Button onClick={handleCancel} variant={"outline"}>
+              Cancel
+            </Button>
+            {/* </DialogCancel> */}
+            {/* <DialogAction asChild> */}
+            <Button onClick={handleConfirm}>Confirm</Button>
+            {/* </DialogAction> */}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     );
   };
 

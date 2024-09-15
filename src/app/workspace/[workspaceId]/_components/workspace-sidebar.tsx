@@ -5,23 +5,63 @@
 // import useGetWorkspace from "@/features/workspaces/api/use-get-workspace";
 import {
   AlertTriangleIcon,
-  // Loader
+  HashIcon,
+  // Loader,
+  MessageSquareTextIcon,
+  SendHorizonalIcon,
 } from "lucide-react";
+// import { useWorkspaceId } from "@/hooks/use-workspace-id";
+// import useCurrentMember from "@/features/members/api/use-current-member";
+// import useGetWorkspace from "@/features/workspaces/api/use-get-workspace";
+// import {
+// AlertTriangleIcon,
+// Loader
+// } from "lucide-react";
 import WorkspaceHeader from "./workspace-header";
+import { SidebarItem } from "./sidebar-item";
 import { Preloaded, usePreloadedQuery } from "convex/react";
 import { api } from "../../../../../convex/_generated/api";
+// import { useGetChannels } from "@/features/channels/api/use-get-channels";
+import { WorkspaceSection } from "./workspace-section";
+import UserItem from "./user-item";
+import { useCreateChannelModal } from "@/features/channels/store/use-create-channel-modal";
+
+// import { Preloaded, usePreloadedQuery } from "convex/react";
+// import { api } from "../../../../../convex/_generated/api";
 
 export default function WorkspaceSidebar({
   preloadedCurrentMember,
   preloadedWorkspace,
+  channelsPreloadQuery,
+  membersPreloadQuery,
 }: {
   preloadedCurrentMember: Preloaded<typeof api.members.current>;
   preloadedWorkspace: Preloaded<typeof api.workspaces.getById>;
+  channelsPreloadQuery: Preloaded<typeof api.channels.get>;
+  membersPreloadQuery: Preloaded<typeof api.members.workspaceMembers>;
 }) {
+  // const workspaceId = useWorkspaceId();
+
+  // ?preload channels data from the server
+  const channels = usePreloadedQuery(channelsPreloadQuery);
+  // ?preload workspaceMemebers data from the server
+  const members = usePreloadedQuery(membersPreloadQuery);
+
+  // const { data: channels, isLoading: isLoadingChannels } = useGetChannels({
+  //   workspaceId,
+  // });
+
+  const [, setOpen] = useCreateChannelModal();
   // ?preload all these data on the server and pass to this component to unpack
 
   const currentMember = usePreloadedQuery(preloadedCurrentMember);
   const workSpace = usePreloadedQuery(preloadedWorkspace);
+
+  // TODO: CHANGE THIS APIS TO PRELOAD ON THE SERVER
+  //   const { data: currentMember, isLoading: CurrentMemberLoading } =
+  //   useCurrentMember({ workspaceId });
+  // const { data: workSpace, isLoading: WorkspaceLoading } =
+  // useGetWorkspace(workspaceId);
 
   console.log("workspace", workSpace);
   console.log("currentMember", currentMember);
@@ -55,6 +95,49 @@ export default function WorkspaceSidebar({
         workspace={workSpace}
         isAdmin={currentMember.role === "admin"}
       />
+      <div className="flex flex-col px-2 mt-3 gap-y-1.5">
+        <SidebarItem
+          label="Threads"
+          icon={MessageSquareTextIcon}
+          id="threads"
+          variant="active"
+        />
+        <SidebarItem
+          label="Drafts and sent"
+          icon={SendHorizonalIcon}
+          id="drafts"
+        />
+      </div>
+      <WorkspaceSection
+        hint="New Channel"
+        label="Channels"
+        onNew={currentMember.role === "admin" ? () => setOpen(true) : undefined}
+      >
+        {channels?.map((item) => (
+          <SidebarItem
+            key={item._id}
+            variant="default"
+            icon={HashIcon}
+            label={item?.chanelName}
+            id={item._id}
+          />
+        ))}
+      </WorkspaceSection>
+      <WorkspaceSection
+        hint="New Direct message"
+        label="Direct Messages"
+        onNew={() => {}}
+      >
+        {members?.map((item) => (
+          <UserItem
+            id={item._id}
+            image={item.userData?.image}
+            key={item._id}
+            label={item.userData?.name}
+            // variant={"active"}
+          />
+        ))}
+      </WorkspaceSection>
     </div>
   );
 }

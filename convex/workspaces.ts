@@ -27,11 +27,18 @@ export const create = mutation({
       name,
       userId,
     });
+
+    await ctx.db.insert("channels", {
+      chanelName: "General",
+      workspaceId,
+    });
+
     await ctx.db.insert("members", {
       role: "admin",
       userId,
       workspaceId,
     });
+
     return workspaceId;
   },
 });
@@ -148,5 +155,106 @@ export const remove = mutation({
     );
 
     return workspaceId;
+  },
+});
+
+export const newJoinCode = mutation({
+  args: { workspaceId: v.id("workspaces") },
+  async handler(ctx, { workspaceId }) {
+    // check if the user is authenticated
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) throw new ConvexError("Unauthenticated");
+
+    // check if the user is a member and admin of the workspace
+    const member = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_user_id", (q) =>
+        q.eq("workspaceId", workspaceId).eq("userId", userId)
+      )
+      .unique();
+
+    if (!member || member.role === "member") {
+      throw new ConvexError("Unauthorized");
+    }
+
+    // ?should probably check if the previous code is equals to the new generated code
+    const workspace = await ctx.db.get(workspaceId);
+    if (!workspace) throw new ConvexError("Workspace does not exist");
+    const checkNewCode = () => {
+      //create a new joincode
+      const newCode = generateCode();
+      if (workspace.joincode !== newCode) return newCode;
+      return checkNewCode();
+    };
+
+    const joincode = checkNewCode();
+
+    // patch the current joincode field of the workspace
+    await ctx.db.patch(workspaceId, {
+      joincode,
+    });
+    return joincode;
+  },
+});
+
+export const join = mutation({
+  args: { joinCode: v.string(), workspaceId: v.id("workspaces") },
+  async handler(ctx, { joinCode, workspaceId }) {
+    // check if the user is authenticated
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) throw new ConvexError("Unauthenticated");
+
+    // checki f the workspace exists
+    const workspace = await ctx.db.get(workspaceId);
+    if (!workspace) throw new ConvexError("This workspace does not exist");
+
+    if (workspace.joincode !== joinCode.toLowerCase())
+      throw new ConvexError("Invalid join code");
+
+    // check if the user is an existing member ----pretty nice edge case
+    const existingMember = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_user_id", (q) =>
+        q.eq("workspaceId", workspaceId).eq("userId", userId)
+      )
+      .unique();
+
+    if (existingMember) {
+      throw new ConvexError("Already a member of this workspace");
+    }
+
+    // add the user as a member to the workspace
+    await ctx.db.insert("members", {
+      userId,
+      workspaceId,
+      role: "member",
+    });
+
+    return {
+      workspaceId,
+    };
+  },
+});
+
+export const getWorkspaceInfo = query({
+  args: { workspaceId: v.id("workspaces") },
+  async handler(ctx, { workspaceId }) {
+    // check if the user is authenticated
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) throw new ConvexError("Unauthenticated");
+
+    const member = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_user_id", (q) =>
+        q.eq("workspaceId", workspaceId).eq("userId", userId)
+      )
+      .unique();
+
+    const workspace = await ctx.db.get(workspaceId);
+
+    return {
+      workspaceName: workspace?.name,
+      isMember: !!member,
+    };
   },
 });

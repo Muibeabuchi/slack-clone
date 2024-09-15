@@ -34,7 +34,7 @@ export default function ResizeableSidebar({
       >
         {workspaceSidebar}
       </ResizablePanel>
-      <ResizableHandle className="bg-red-700 w-2 " withHandle />
+      <ResizableHandle withHandle />
       <ResizablePanel minSize={20} defaultSize={defaultLayout?.[1]}>
         {children}
       </ResizablePanel>

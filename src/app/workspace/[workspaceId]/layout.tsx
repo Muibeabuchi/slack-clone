@@ -1,4 +1,4 @@
-import { fetchQuery } from "convex/nextjs";
+import { fetchQuery, preloadQuery } from "convex/nextjs";
 
 import Sidebar from "./_components/sidebar";
 import Toolbar from "./_components/toolbar";
@@ -39,6 +39,25 @@ const WorkspaceLayout = async ({
     }
   );
 
+  const membersPreloadQuery = await preloadQuery(
+    api.members.workspaceMembers,
+    {
+      workspaceId,
+    },
+    {
+      token: convexAuthNextjsToken(),
+    }
+  );
+  const channelsPreloadQuery = await preloadQuery(
+    api.channels.get,
+    {
+      workspaceId,
+    },
+    {
+      token: convexAuthNextjsToken(),
+    }
+  );
+
   // prefetch data for the workspaceSidebae component
   const preloadedCurrentMember = await preloadCurrentMember(workspaceId);
   const preloadedWorkspace = await preloadWorkspace(workspaceId);
@@ -52,6 +71,12 @@ const WorkspaceLayout = async ({
           <WorkspaceSwitcher workspace={workspace} />
         </Sidebar>
         <ResizeableSidebar
+          workspaceSidebar={
+            <WorkspaceSidebar
+              membersPreloadQuery={membersPreloadQuery}
+              channelsPreloadQuery={channelsPreloadQuery}
+            />
+          }
           workspaceSidebar={
             <WorkspaceSidebar
               preloadedWorkspace={preloadedWorkspace}

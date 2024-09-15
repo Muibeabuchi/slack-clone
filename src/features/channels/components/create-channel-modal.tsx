@@ -14,10 +14,10 @@ import { ChangeEvent, ReactEventHandler, useState } from "react";
 import { useCreateChannel } from "../api/use-create-channel";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
 import { toast } from "sonner";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function CreateChannelModal() {
-  //   const router = useRouter();
+  const router = useRouter();
   const workspaceId = useWorkspaceId();
   const [openCreateChannelModal, setOpenCreateChannelModal] =
     useCreateChannelModal();
@@ -27,6 +27,11 @@ export default function CreateChannelModal() {
   const { mutate: createNewChannel, isPending: channelLoading } =
     useCreateChannel();
 
+  const handleClose = () => {
+    setChannelName("");
+    setOpenCreateChannelModal(false);
+  };
+
   const handleSubmit: ReactEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     createNewChannel(
@@ -35,11 +40,13 @@ export default function CreateChannelModal() {
         workspaceId,
       },
       {
-        onSuccess() {
+        onSuccess(channelId) {
           toast.success("Channel created");
-          //   TODO: redirect to new channel
-          //   router.push(``);
+          router.push(`/workspace/${workspaceId}/channel/${channelId}`);
           handleClose();
+        },
+        onError() {
+          toast.error("Failed to create the channel");
         },
       }
     );
@@ -51,10 +58,6 @@ export default function CreateChannelModal() {
     setChannelName(value);
   };
 
-  const handleClose = () => {
-    setChannelName("");
-    setOpenCreateChannelModal(false);
-  };
   return (
     <Dialog open={openCreateChannelModal} onOpenChange={handleClose}>
       <DialogContent>

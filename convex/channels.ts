@@ -118,3 +118,37 @@ export const edit = mutation({
     return channel;
   },
 });
+
+export const remove = mutation({
+  args: {
+    // channelName: v.string(),
+    // workspaceId: v.id("workspaces"),
+    channelId: v.id("channels"),
+  },
+  async handler(ctx, { channelId }) {
+    // check if the user is authenticated
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) throw new ConvexError("Unauthorized");
+
+    // check if the channel exits
+    const channel = await ctx.db.get(channelId);
+    if (!channel) throw new ConvexError("The channel does not exist!");
+
+    // check if the user is an admin of the workspace
+    const isMember = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_user_id", (q) =>
+        q.eq("workspaceId", channel.workspaceId).eq("userId", userId)
+      )
+      .unique();
+
+    if (!isMember || isMember.role === "member")
+      throw new ConvexError("Unauthorized");
+
+    // TODO: remove associated messages
+
+    // delete new channelName into the workspace
+    await ctx.db.delete(channelId);
+    return channel;
+  },
+});

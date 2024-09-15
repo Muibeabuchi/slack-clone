@@ -15,7 +15,7 @@ type Options = {
   throwError?: boolean;
 };
 
-export const useEditChannelName = () => {
+export const useRemoveChannel = () => {
   const mutation = useMutation(api.channels.remove);
 
   const [data, setData] = useState<ResponseType>(null);

@@ -77,3 +77,44 @@ export const create = mutation({
     });
   },
 });
+
+export const edit = mutation({
+  args: {
+    channelName: v.string(),
+    workspaceId: v.id("workspaces"),
+    channelId: v.id("channels"),
+  },
+  async handler(ctx, { channelName, workspaceId, channelId }) {
+    // check if the user is authenticated
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) throw new ConvexError("Unauthorized");
+
+    // check if the user is an admin of the workspace
+    const isMember = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_user_id", (q) =>
+        q.eq("workspaceId", workspaceId).eq("userId", userId)
+      )
+      .unique();
+
+    if (!isMember || isMember.role === "member")
+      throw new ConvexError("Unauthorized");
+
+    // parse the value to name to strip backspaces and repplace with dashes
+    const parsedChannelName = channelName.replace(/\s+/g, "-");
+
+    // check if the channel exits
+    const channel = await ctx.db.get(channelId);
+    if (!channel) throw new ConvexError("The channel does not exist!");
+
+    // ?check if the workspace name is a duplicate
+    const isDuplicate = parsedChannelName === channel.chanelName;
+    if (isDuplicate) throw new ConvexError("Same Channel Name");
+
+    // patch new channelName into the workspace
+    await ctx.db.patch(channelId, {
+      chanelName: parsedChannelName,
+    });
+    return channel;
+  },
+});

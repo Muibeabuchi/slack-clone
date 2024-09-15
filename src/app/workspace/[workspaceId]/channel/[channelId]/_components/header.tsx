@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import { useRemoveChannel } from "@/features/channels/api/use-remove-channel";
 import { useConfirm } from "@/hooks/use-confirm";
 import { useRouter } from "next/navigation";
+import useCurrentMember from "@/features/members/api/use-current-member";
 
 interface HeaderProps {
   headerTitle: string;
@@ -29,6 +30,7 @@ export default function Header({ headerTitle }: HeaderProps) {
   const router = useRouter();
   const channelId = useChannelId();
   const workspaceId = useWorkspaceId();
+  const { data: currentMember } = useCurrentMember({ workspaceId });
   const [editOpen, setEditOpen] = useState(false);
   const [value, setValue] = useState("");
   const { mutate: editChannelName, isPending: editingChannelName } =
@@ -40,6 +42,12 @@ export default function Header({ headerTitle }: HeaderProps) {
     "Are you sure?",
     "This action cannot be undone"
   );
+
+  const handleEditOpen = (value: boolean) => {
+    if (!currentMember) return;
+    if (currentMember.role === "member") return;
+    setEditOpen(value);
+  };
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     // convert whitespaces to dashes
@@ -109,14 +117,16 @@ export default function Header({ headerTitle }: HeaderProps) {
               <DialogTitle># {headerTitle}</DialogTitle>
             </DialogHeader>
             <div className="px-4 pb-4 flex flex-col gap-y-2">
-              <Dialog open={editOpen} onOpenChange={setEditOpen}>
+              <Dialog open={editOpen} onOpenChange={handleEditOpen}>
                 <DialogTrigger asChild>
                   <div className="px-5 py-4 bg-white rounded-lg border cursor-pointer hover:bg-gray-50">
                     <div className="flex items-center justify-between">
                       <p className="text-sm font-semibold">Channel Name</p>
-                      <p className="text-sm text-[#126483] hover:underline font-semibold">
-                        Edit
-                      </p>
+                      {currentMember?.role === "admin" ? (
+                        <p className="text-sm text-[#126483] hover:underline font-semibold">
+                          Edit
+                        </p>
+                      ) : null}
                     </div>
                     <p className="text-sm"># {headerTitle}</p>
                   </div>
@@ -150,15 +160,16 @@ export default function Header({ headerTitle }: HeaderProps) {
                   </form>
                 </DialogContent>
               </Dialog>
-
-              <button
-                onClick={handleDelete}
-                disabled={deletingChannel}
-                className="flex items-center px-5 py-4 bg-white rounded-lg cursor-pointer border hover:bg-gray-50 gap-x-2 text-rose-600"
-              >
-                <TrashIcon className="size-4 " />
-                <p className="text-sm font-semibold">Delete Channel</p>
-              </button>
+              {currentMember?.role === "admin" ? (
+                <button
+                  onClick={handleDelete}
+                  disabled={deletingChannel || currentMember?.role !== "admin"}
+                  className="flex items-center px-5 py-4 bg-white rounded-lg cursor-pointer border hover:bg-gray-50 gap-x-2 text-rose-600"
+                >
+                  <TrashIcon className="size-4 " />
+                  <p className="text-sm font-semibold">Delete Channel</p>
+                </button>
+              ) : null}
             </div>
           </DialogContent>
         </Dialog>

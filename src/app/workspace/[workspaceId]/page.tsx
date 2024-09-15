@@ -7,6 +7,7 @@ import { Id } from "../../../../convex/_generated/dataModel";
 import { useGetChannels } from "@/features/channels/api/use-get-channels";
 import useGetWorkspace from "@/features/workspaces/api/use-get-workspace";
 import { LoaderIcon, TriangleAlertIcon } from "lucide-react";
+import useCurrentMember from "@/features/members/api/use-current-member";
 
 export default function WorkspaceIdPage({
   params: { workspaceId },
@@ -16,6 +17,10 @@ export default function WorkspaceIdPage({
   const router = useRouter();
   const { data: workspace, isLoading: workspaceLoading } =
     useGetWorkspace(workspaceId);
+  const { data: currentMember, isLoading: loadingCurrentMember } =
+    useCurrentMember({
+      workspaceId,
+    });
   const { data: channels, isLoading: loadingChannels } = useGetChannels({
     workspaceId,
   });
@@ -23,13 +28,26 @@ export default function WorkspaceIdPage({
 
   // const firstWorkspace = useMemo(() => workspace?._id, [workspace]);
   const firstChannelId = useMemo(() => channels?.[0]?._id, [channels]);
+  const isAdmin = useMemo(
+    () => currentMember?.role === "admin",
+    [currentMember?.role]
+  );
 
   useEffect(() => {
-    if (workspaceLoading || loadingChannels || !workspace) return;
+    if (
+      workspaceLoading ||
+      loadingChannels ||
+      loadingCurrentMember ||
+      !currentMember ||
+      !workspace
+    )
+      return;
 
     if (firstChannelId) {
       router.push(`/workspace/${workspaceId}/channel/${firstChannelId}`);
-    } else if (!openCreateChannel) setOpenCreateChannel(true);
+    } else if (!openCreateChannel && isAdmin) {
+      setOpenCreateChannel(true);
+    }
   }, [
     workspaceLoading,
     loadingChannels,
@@ -39,9 +57,12 @@ export default function WorkspaceIdPage({
     firstChannelId,
     openCreateChannel,
     setOpenCreateChannel,
+    loadingCurrentMember,
+    isAdmin,
+    currentMember,
   ]);
 
-  if (workspaceLoading || loadingChannels) {
+  if (workspaceLoading || loadingChannels || loadingCurrentMember) {
     return (
       <div className="flex-1 h-full flex flex-col gap-2 justify-center items-center">
         <LoaderIcon className="animate-spin size-6 text-muted-foreground" />
@@ -52,7 +73,7 @@ export default function WorkspaceIdPage({
   if (!workspace) {
     return (
       <div className="flex-1 h-full flex flex-col gap-2 justify-center items-center">
-        <TriangleAlertIcon className="animate-spin size-6 text-muted-foreground" />
+        <TriangleAlertIcon className=" size-6 text-muted-foreground" />
         <span className="text-sm text-muted-foreground">
           Workspace not found
         </span>
@@ -60,5 +81,10 @@ export default function WorkspaceIdPage({
     );
   }
 
-  return null;
+  return (
+    <div className="flex-1 h-full flex flex-col gap-2 justify-center items-center">
+      <TriangleAlertIcon className=" size-6 text-muted-foreground" />
+      <span className="text-sm text-muted-foreground">No Channel Found.</span>
+    </div>
+  );
 }

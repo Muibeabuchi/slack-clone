@@ -18,6 +18,7 @@ import { api } from "../../../../../convex/_generated/api";
 import { WorkspaceSection } from "./workspace-section";
 import UserItem from "./user-item";
 import { useCreateChannelModal } from "@/features/channels/store/use-create-channel-modal";
+import useChannelId from "@/hooks/use-channel-id";
 
 export default function WorkspaceSidebar({
   channelsPreloadQuery,
@@ -26,6 +27,7 @@ export default function WorkspaceSidebar({
   channelsPreloadQuery: Preloaded<typeof api.channels.get>;
   membersPreloadQuery: Preloaded<typeof api.members.workspaceMembers>;
 }) {
+  const channelId = useChannelId();
   const workspaceId = useWorkspaceId();
 
   // ?preload channels data from the server
@@ -71,7 +73,7 @@ export default function WorkspaceSidebar({
           label="Threads"
           icon={MessageSquareTextIcon}
           id="threads"
-          variant="active"
+          // variant="active"
         />
         <SidebarItem
           label="Drafts and sent"
@@ -87,7 +89,7 @@ export default function WorkspaceSidebar({
         {channels?.map((item) => (
           <SidebarItem
             key={item._id}
-            variant="default"
+            variant={channelId === item._id ? "active" : "default"}
             icon={HashIcon}
             label={item?.chanelName}
             id={item._id}

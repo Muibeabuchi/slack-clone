@@ -8,7 +8,19 @@ import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
 import { Modals } from "@/components/modals";
 import { Toaster } from "@/components/ui/sonner";
 
-import "react-quill/dist/quill.snow.css";
+import "quill/dist/quill.snow.css";
+
+// <ul>
+//   <li>hgcxwi</li>
+//   <li>hgcxwi</li>
+//   <li>hgcxwi</li>
+//   <li>hgcxwi</li>
+// </ul>;
+// <ol>
+// </ol>
+
+// // import "react-quill/dist/quill.snow.css";
+// <li></li>
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

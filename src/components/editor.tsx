@@ -1,6 +1,8 @@
 import Quill, { type QuillOptions } from "quill";
 
-import "react-quill/dist/quill.snow.css";
+// import "react-quill/dist/quill.snow.css";
+// import "quill/dist/quill.snow.css";
+
 import { Button } from "./ui/button";
 import { ImageIcon, SmileIcon } from "lucide-react";
 import Hint from "./hint";

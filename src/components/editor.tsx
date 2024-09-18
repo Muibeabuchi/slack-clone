@@ -15,6 +15,7 @@ import React, {
   // useMemo,
   useState,
   useLayoutEffect,
+  useMemo,
 } from "react";
 
 import { PiTextAa } from "react-icons/pi";
@@ -47,6 +48,11 @@ const Editor = ({
   const [text, setText] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [isToolbarVisible, setIsToolbarVisible] = useState(true);
+
+  const imageBlob = useMemo(() => {
+    if (!image) return;
+    return URL.createObjectURL(image!);
+  }, [image]);
 
   console.log(image);
 
@@ -165,6 +171,10 @@ const Editor = ({
               <Hint label="Remove image">
                 <button
                   onClick={() => {
+                    // revoke  the  url object
+                    if (image) {
+                      URL.revokeObjectURL(imageBlob!);
+                    }
                     setImage(null);
                     imageRef.current!.value = "";
                   }}
@@ -174,9 +184,12 @@ const Editor = ({
                 </button>
               </Hint>
               <Image
-                src={URL.createObjectURL(image)}
+                src={imageBlob}
                 alt="uploaded"
                 fill
+                onLoad={() => {
+                  if (image) URL.revokeObjectURL(imageBlob);
+                }}
                 className="rounded-xl overflow-hidden border object-cover"
               />
             </div>

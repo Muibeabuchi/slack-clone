@@ -1,9 +1,12 @@
 "use client";
 
+import { LoaderIcon, TriangleAlertIcon } from "lucide-react";
+
 import { UseGetChannelById } from "@/features/channels/api/use-get-channel-by-id";
 import useChannelId from "@/hooks/use-channel-id";
-import { LoaderIcon, TriangleAlertIcon } from "lucide-react";
+
 import Header from "./_components/header";
+import ChatInput from "./_components/chat-input";
 
 const ChannelIdPage = () => {
   // write effect that checks if there an admin is on a workspace page with no channel and open the create channel modal
@@ -33,6 +36,8 @@ const ChannelIdPage = () => {
     return (
       <div className="flex flex-col h-full">
         <Header headerTitle={channel.chanelName} />
+        <div className="flex-1" />
+        <ChatInput placeholder={`Message #${channel.chanelName}`} />
       </div>
     );
   }

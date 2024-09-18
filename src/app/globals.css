@@ -88,6 +88,71 @@ body {
   }
 }
 
+.ql-snow .ql-picker.ql-expanded .ql-picker-options {
+  display: block !important;
+  margin-top: -1px !important;
+  bottom: 100% !important;
+  z-index: 5 !important;
+  top: unset !important;
+  /* overflow-y: scroll; */
+}
+
+.ql-toolbar {
+  border: none !important;
+  background-color: #f8f8f8 !important;
+}
+
+.ql-toolbar .ql-formats:not(:last-child) {
+  border-right: 1px solid #dcdcdc !important;
+  padding: 12px !important;
+}
+
+.ql-container {
+  font-family: "lato" sans-serif !important;
+  bottom: none !important;
+  height: unset !important;
+}
+
+.ql-editor {
+  line-height: 22px !important;
+  padding: 8px 12px !important;
+  color: #1d1c1d !important;
+  font-weight: 400 !important;
+  font-family: "lato" sans-serif !important;
+  font-size: 14px !important;
+}
+
+.ql-editor a {
+  color: #1264a3 !important;
+}
+
+.ql-editor a:hover {
+  text-decoration: underline !important;
+}
+
+.ql-renderer {
+  padding: 0 !important;
+}
+
+.ql-editor::before {
+  left: 12px !important;
+  font-family: "lato" sans-serif !important;
+  color: #8d8d8d !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  font-style: normal !important;
+  @apply truncate;
+}
+
+.ql-container.ql-snow {
+  border: none !important;
+}
+
+.ql-toolbar.ql-snow {
+  /* border: none !important; */
+  padding: 0 !important ;
+}
+
 @layer base {
   * {
     @apply border-border;

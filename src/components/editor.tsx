@@ -20,6 +20,7 @@ import React, {
 import { PiTextAa } from "react-icons/pi";
 import { MdSend } from "react-icons/md";
 import { cn } from "@/lib/utils";
+import EmojiPicker from "./emoji-picker";
 
 type EditorValue = { image: File | null; body: string };
 
@@ -134,6 +135,11 @@ const Editor = ({
     const toolBarElement = containerRef.current?.querySelector(".ql-toolbar");
     if (toolBarElement) toolBarElement.classList.toggle("hidden");
   };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onEmojiSelect = (emoji: any) => {
+    const quill = quillRef.current;
+    quill?.insertText(quill.getSelection()?.index || 0, emoji?.native);
+  };
 
   return (
     <div className="flex flex-col ">
@@ -153,16 +159,11 @@ const Editor = ({
               <PiTextAa className="size-4" />
             </Button>
           </Hint>
-          <Hint label="emoji">
-            <Button
-              disabled={disabled}
-              size={"iconSm"}
-              variant={"ghost"}
-              onClick={() => {}}
-            >
+          <EmojiPicker onEmojiSelect={onEmojiSelect}>
+            <Button disabled={disabled} size={"iconSm"} variant={"ghost"}>
               <SmileIcon className="size-4" />
             </Button>
-          </Hint>
+          </EmojiPicker>
           {variant === "create" ? (
             <Hint label="image">
               <Button
@@ -216,12 +217,20 @@ const Editor = ({
           ) : null}
         </div>
       </div>
-      <div className="p-2 text-[10px] text-muted-foreground flex justify-end">
-        <p>
-          <strong>Shift + Return </strong>
-          to add a new line
-        </p>
-      </div>
+      {variant === "create" ? (
+        <div
+          className={cn(
+            "p-2 text-[10px] text-muted-foreground flex justify-end opacity-0 transition",
+
+            !isEmpty && "opacity-100"
+          )}
+        >
+          <p>
+            <strong>Shift + Return </strong>
+            to add a new line
+          </p>
+        </div>
+      ) : null}
     </div>
   );
 };

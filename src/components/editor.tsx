@@ -42,7 +42,7 @@ const Editor = ({
   onSubmit,
   disabled = false,
   innerRef,
-  // onCancel,
+  onCancel,
   placeholder = "Write something",
 }: EditorProps) => {
   const [text, setText] = useState("");
@@ -54,7 +54,7 @@ const Editor = ({
     return URL.createObjectURL(image!);
   }, [image]);
 
-  console.log(image);
+  // console.log(image);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const submitRef = useRef(onSubmit);
@@ -95,7 +95,20 @@ const Editor = ({
                 key: "Enter",
                 handler: () => {
                   // submit the form
-                  return;
+                  const text = quill.getText();
+                  const addedImage = imageRef.current?.files?.[0] || null;
+
+                  const isEmpty =
+                    !addedImage &&
+                    text.replace(/<(.|\n)*?>/g, "").trim().length === 0;
+
+                  console.log("ready...");
+                  if (isEmpty) return;
+                  console.log("submitting");
+                  submitRef.current?.({
+                    body: JSON.stringify(quill.getContents()),
+                    image: addedImage,
+                  });
                 },
               },
               shift_enter: {
@@ -140,7 +153,7 @@ const Editor = ({
     [innerRef]
   );
 
-  const isEmpty = text.replace(/<(.|\n)*?>/g, "").trim().length === 0;
+  const isEmpty = !image && text.replace(/<(.|\n)*?>/g, "").trim().length === 0;
 
   const toggleToolBar = () => {
     setIsToolbarVisible((prev) => !prev);
@@ -184,11 +197,11 @@ const Editor = ({
                 </button>
               </Hint>
               <Image
-                src={imageBlob}
+                src={imageBlob!}
                 alt="uploaded"
                 fill
                 onLoad={() => {
-                  if (image) URL.revokeObjectURL(imageBlob);
+                  if (image) URL.revokeObjectURL(imageBlob!);
                 }}
                 className="rounded-xl overflow-hidden border object-cover"
               />
@@ -231,14 +244,19 @@ const Editor = ({
               <Button
                 variant={"outline"}
                 size={"sm"}
-                onClick={() => {}}
+                onClick={onCancel}
                 disabled={disabled}
               >
                 Cancel
               </Button>
               <Button
                 className=" bg-[#007a5a] hover:bg-[#007a5a]/80 text-white "
-                onClick={() => {}}
+                onClick={() => {
+                  onSubmit({
+                    body: JSON.stringify(quillRef.current?.getContents()),
+                    image,
+                  });
+                }}
                 disabled={disabled || isEmpty}
                 size="sm"
               >
@@ -251,7 +269,12 @@ const Editor = ({
             <Hint label="send">
               <Button
                 disabled={isEmpty || disabled}
-                onClick={() => {}}
+                onClick={() => {
+                  onSubmit({
+                    body: JSON.stringify(quillRef.current?.getContents()),
+                    image,
+                  });
+                }}
                 className={cn(
                   "ml-auto",
                   isEmpty

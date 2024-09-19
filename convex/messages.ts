@@ -23,8 +23,12 @@ export const create = mutation({
     workspaceId: v.id("workspaces"),
     channelId: v.optional(v.id("channels")),
     parentMessageId: v.optional(v.id("messages")),
+    conversationId: v.optional(v.id("conversations")),
   },
-  async handler(ctx, { body, image, workspaceId, channelId, parentMessageId }) {
+  async handler(
+    ctx,
+    { body, image, workspaceId, channelId, parentMessageId, conversationId }
+  ) {
     // check for a valid user
     const userId = await getAuthUserId(ctx);
     if (userId === null) throw new ConvexError("Unauthorized");
@@ -33,7 +37,13 @@ export const create = mutation({
 
     if (!member) throw new ConvexError("Unauthorized");
 
-    // TODO: Handle conversation-iD
+    let _conversationId = conversationId;
+    // only possible if in a 1:1 conversation
+    if (!conversationId && !channelId && parentMessageId) {
+      const parentMessage = await ctx.db.get(parentMessageId);
+      if (!parentMessage) throw new ConvexError("Parent message not found");
+      _conversationId = parentMessage.conversationId;
+    }
 
     return await ctx.db.insert("messages", {
       body,
@@ -43,6 +53,7 @@ export const create = mutation({
       image,
       parentMessageId,
       updatedAt: Date.now(),
+      conversationId: _conversationId,
     });
   },
 });

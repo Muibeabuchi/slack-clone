@@ -26,7 +26,7 @@ const schema = defineSchema({
     chanelName: v.string(),
     workspaceId: v.id("workspaces"),
   }).index("by_workspaceId", ["workspaceId"]),
-  conversation: defineTable({
+  conversations: defineTable({
     workspaceId: v.id("workspaces"),
     memberOneId: v.id("members"),
     memberTwoId: v.id("members"),
@@ -39,7 +39,7 @@ const schema = defineSchema({
     //? Messages can be 1v1 or in a channel.....
     channelId: v.optional(v.id("channels")),
     parentMessageId: v.optional(v.id("messages")),
-    conversationId: v.id("conversations"),
+    conversationId: v.optional(v.id("conversations")),
     updatedAt: v.number(),
   })
     .index("by_workspace_id", ["workspaceId"])

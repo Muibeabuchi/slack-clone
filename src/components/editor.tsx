@@ -176,7 +176,12 @@ const Editor = ({
         onChange={(e) => setImage(e.target.files![0])}
       />
       {/* overflow-hidden hiding dropdown of quill editor */}
-      <div className="flex flex-col border border-slate-200 rounded-md focus-within:border-slate-300 focus-within:shadow-sm transition bg-white">
+      <div
+        className={cn(
+          "flex flex-col border border-slate-200 rounded-md focus-within:border-slate-300 focus-within:shadow-sm transition bg-white",
+          disabled && "opacity-50"
+        )}
+      >
         <div ref={containerRef} />
         {!!image ? (
           <div className="p-2 ">

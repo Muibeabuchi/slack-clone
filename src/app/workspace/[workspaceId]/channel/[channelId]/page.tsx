@@ -7,15 +7,19 @@ import useChannelId from "@/hooks/use-channel-id";
 
 import Header from "./_components/header";
 import ChatInput from "./_components/chat-input";
+import { useGetMessages } from "@/features/messages/api/use-get-messages";
+import MessageList from "@/components/message-list";
 
 const ChannelIdPage = () => {
   // write effect that checks if there an admin is on a workspace page with no channel and open the create channel modal
   const channelId = useChannelId();
+  const { results, status, loadMore } = useGetMessages({ channelId });
+  console.log(results);
   const { data: channel, isLoading: channelLoading } = UseGetChannelById({
     channelId,
   });
 
-  if (channelLoading) {
+  if (channelLoading || status === "LoadingFirstPage") {
     return (
       <div className="flex h-full items-center justify-center flex-1">
         <LoaderIcon className="size-5 animate-spin text-muted-foreground" />
@@ -32,11 +36,19 @@ const ChannelIdPage = () => {
       </div>
     );
   }
+
   if (channel) {
     return (
       <div className="flex flex-col h-full">
         <Header headerTitle={channel.chanelName} />
-        <div className="flex-1" />
+        <MessageList
+          channelName={channel.chanelName}
+          channelCreationTime={channel._creationTime}
+          data={results}
+          loadMore={loadMore}
+          isLoadingMore={status === "LoadingMore"}
+          canLoadMore={status === "CanLoadMore"}
+        />
         <ChatInput placeholder={`Message #${channel.chanelName}`} />
       </div>
     );

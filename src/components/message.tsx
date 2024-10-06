@@ -11,6 +11,8 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useRemoveMessage } from "@/features/messages/api/use-remove-message ";
 import { useConfirm } from "@/hooks/use-confirm";
+import { useToggleReactions } from "@/features/messages/api/use-toggle-reactions";
+import { Reactions } from "./reactions";
 
 const Renderer = dynamic(() => import("@/components/renderer"), {
   ssr: false,
@@ -79,8 +81,21 @@ export const Message = ({
     useUpdateMessage();
   const { mutate: removeMessage, isPending: removingMessage } =
     useRemoveMessage();
+  const { mutate: toggleReaction, isPending: isTogglingReaction } =
+    useToggleReactions();
 
   const isUpdating = updatingMessage;
+
+  const handleReaction = (value: string) => {
+    toggleReaction(
+      { messageId: id, value },
+      {
+        onError() {
+          toast.error("Failed to toggle reaction");
+        },
+      }
+    );
+  };
 
   const handleUpdateMessage = ({ body }: { body: string }) => {
     updateMessage(
@@ -152,6 +167,7 @@ export const Message = ({
                 {updatedAt ? (
                   <span className="text-xs text-muted-foregrund">(edited)</span>
                 ) : null}
+                <Reactions data={reactions} onChange={handleReaction} />
               </div>
             )}
           </div>
@@ -162,7 +178,7 @@ export const Message = ({
               handleEdit={() => setEditingId(id)}
               handleThread={() => {}}
               handleDelete={() => handleDeleteMessage({ id })}
-              handleReaction={() => {}}
+              handleReaction={handleReaction}
               hideThreadButton={hideThreadButton}
             />
           ) : null}
@@ -225,6 +241,7 @@ export const Message = ({
               {updatedAt ? (
                 <span className="text-xs text-muted-foreground">(edited)</span>
               ) : null}
+              <Reactions data={reactions} onChange={handleReaction} />
             </div>
           )}
         </div>
@@ -235,7 +252,7 @@ export const Message = ({
             handleEdit={() => setEditingId(id)}
             handleThread={() => {}}
             handleDelete={() => handleDeleteMessage({ id })}
-            handleReaction={() => {}}
+            handleReaction={handleReaction}
             hideThreadButton={hideThreadButton}
           />
         ) : null}

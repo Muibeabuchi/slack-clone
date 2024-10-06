@@ -16,7 +16,7 @@ type Options = {
   throwError?: boolean;
 };
 
-export const useCreateMessage = () => {
+export const useToggleReactions = () => {
   const mutation = useMutation(api.reactions.toggle);
 
   const [data, setData] = useState<ResponseType>(null);

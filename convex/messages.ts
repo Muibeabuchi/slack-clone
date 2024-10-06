@@ -63,6 +63,33 @@ async function getMember(
     .unique();
 }
 
+export const update = mutation({
+  args: {
+    messageId: v.id("messages"),
+    body: v.string(),
+  },
+  async handler(ctx, args) {
+    // check if the user is authenticated
+
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) throw new ConvexError("Unauthorized");
+
+    const message = await ctx.db.get(args.messageId);
+    if (!message) {
+      throw new ConvexError("Message not found");
+    }
+
+    const member = await getMember(ctx, message.workspaceId, userId);
+    if (!member || member._id !== message.memberId)
+      throw new ConvexError("Unauthorized");
+
+    await ctx.db.patch(args.messageId, {
+      body: args.body,
+      updatedAt: Date.now(),
+    });
+  },
+});
+
 export const get = query({
   args: {
     channelId: v.optional(v.id("channels")),

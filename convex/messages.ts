@@ -166,7 +166,7 @@ export const get = query({
               return {
                 ...reaction,
                 count: reactions.filter((r) => {
-                  r.value === reaction.value;
+                  return r.value === reaction.value;
                 }).length,
               };
             });

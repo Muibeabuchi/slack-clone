@@ -47,8 +47,8 @@ const populateThread = async (ctx: QueryCtx, messageId: Id<"messages">) => {
     timestamp: lastMessage._creationTime,
   };
 };
-const populateMember = (ctx: QueryCtx, memeberId: Id<"members">) =>
-  ctx.db.get(memeberId);
+const populateMember = (ctx: QueryCtx, memberId: Id<"members">) =>
+  ctx.db.get(memberId);
 
 async function getMember(
   ctx: QueryCtx,

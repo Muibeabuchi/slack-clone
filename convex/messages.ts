@@ -90,6 +90,29 @@ export const update = mutation({
     return args.messageId;
   },
 });
+export const remove = mutation({
+  args: {
+    messageId: v.id("messages"),
+  },
+  async handler(ctx, args) {
+    // check if the user is authenticated
+
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) throw new ConvexError("Unauthorized");
+
+    const message = await ctx.db.get(args.messageId);
+    if (!message) {
+      throw new ConvexError("Message not found");
+    }
+
+    const member = await getMember(ctx, message.workspaceId, userId);
+    if (!member || member._id !== message.memberId)
+      throw new ConvexError("Unauthorized");
+
+    await ctx.db.delete(args.messageId);
+    return args.messageId;
+  },
+});
 
 export const get = query({
   args: {

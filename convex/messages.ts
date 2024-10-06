@@ -87,6 +87,7 @@ export const update = mutation({
       body: args.body,
       updatedAt: Date.now(),
     });
+    return args.messageId;
   },
 });
 

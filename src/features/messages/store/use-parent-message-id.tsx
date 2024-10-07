@@ -1,3 +1,4 @@
 import { useQueryState } from "nuqs";
 
-export const useParentMessageId = () => useQueryState("parentMessageId");
+export const useParentMessageId = () =>
+  useQueryState("parentMessageId", { history: "push" });

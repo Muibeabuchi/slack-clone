@@ -63,11 +63,11 @@ export const Message = ({
   updatedAt,
   authorImage,
   authorName = "Member",
-  hideThreadCount,
+  // hideThreadCount,
   isCompact,
-  threadCount,
-  threadImage,
-  threadTimeStamp,
+  // threadCount,
+  // threadImage,
+  // threadTimeStamp,
   hideThreadButton,
   isEditing,
   setEditingId,
@@ -82,9 +82,11 @@ export const Message = ({
     useUpdateMessage();
   const { mutate: removeMessage, isPending: removingMessage } =
     useRemoveMessage();
-  const { mutate: toggleReaction, isPending: isTogglingReaction } =
-    useToggleReactions();
-  const { onOpenMessage, onCloseMessage } = usePanel();
+  const {
+    mutate: toggleReaction,
+    // isPending: isTogglingReaction
+  } = useToggleReactions();
+  const { onOpenMessage, onCloseMessage, parentMessageId } = usePanel();
 
   const isUpdating = updatingMessage;
 
@@ -125,7 +127,9 @@ export const Message = ({
       {
         onSuccess: () => {
           toast.success("Messaged deleted");
-          onCloseMessage();
+          if (parentMessageId === id) {
+            onCloseMessage();
+          }
         },
         onError: () => {
           toast.success("Filed to delete message");

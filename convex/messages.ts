@@ -123,8 +123,8 @@ export const get = query({
   },
   async handler(ctx, args) {
     const userId = await getAuthUserId(ctx);
-    // if (!userId) throw new ConvexError("Unauthorized");
-    if (!userId) return null;
+    if (!userId) throw new ConvexError("Unauthorized");
+    // if (!userId) return null;
 
     let _conversationId = args.conversationId;
 

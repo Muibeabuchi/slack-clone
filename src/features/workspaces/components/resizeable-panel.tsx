@@ -5,7 +5,11 @@ import {
   ResizablePanel,
   ResizableHandle,
 } from "@/components/ui/resizable";
+import { usePanel } from "@/hooks/use-panel";
+import { Loader } from "lucide-react";
 import { ReactNode } from "react";
+import { Id } from "../../../../convex/_generated/dataModel";
+import { Threads } from "@/features/messages/components/Threads";
 
 interface ResizeablePanelProps {
   children: ReactNode;
@@ -21,6 +25,9 @@ export default function ResizeableSidebar({
   const onLayout = (sizes: number[]) => {
     document.cookie = `react-resizable-panels:layout=${JSON.stringify(sizes)}`;
   };
+  const { parentMessageId, onCloseMessage } = usePanel();
+  const showPanel = !!parentMessageId;
+
   return (
     <ResizablePanelGroup
       autoSaveId={"chiki-workspace-layout"}
@@ -38,6 +45,30 @@ export default function ResizeableSidebar({
       <ResizablePanel minSize={20} defaultSize={defaultLayout?.[1]}>
         {children}
       </ResizablePanel>
+
+      {showPanel ? (
+        <>
+          <ResizableHandle withHandle />
+          <ResizablePanel
+            defaultSize={29}
+            minSize={20}
+            // className="bg-[#5e2c5f]"
+          >
+            {parentMessageId ? (
+              <Threads
+                messageId={parentMessageId as Id<"messages">}
+                onClose={onCloseMessage}
+              />
+            ) : (
+              <div className="flex items-center justify-center h-full w-full">
+                <Loader className="size-5 animate-spin text-muted-foreground" />
+              </div>
+            )}
+            {/* fetch data for the thread */}
+            {/* display the data with already built components */}
+          </ResizablePanel>
+        </>
+      ) : null}
     </ResizablePanelGroup>
   );
 }

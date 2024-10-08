@@ -6,7 +6,7 @@ interface UseGetMessageByIdProps {
   messageId: Id<"messages">;
 }
 
-export function UseGetMessageById({ messageId }: UseGetMessageByIdProps) {
+export function useGetMessageById({ messageId }: UseGetMessageByIdProps) {
   const data = useQuery(api.messages.getById, {
     messageId,
   });

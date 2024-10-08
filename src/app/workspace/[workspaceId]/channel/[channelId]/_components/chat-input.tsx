@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import Quill from "quill";
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import { useCreateMessage } from "@/features/messages/api/use-create-message";
 
@@ -23,11 +23,11 @@ interface ChatInputProps {
   placeholder: string;
 }
 
-const ChatInput = ({ placeholder }: ChatInputProps) => {
-  const DynamicEditor = useMemo(() => {
-    return dynamic(() => import("@/components/editor"), { ssr: false });
-  }, []);
+const DynamicEditor = dynamic(() => import("@/components/editor"), {
+  ssr: false,
+});
 
+const ChatInput = ({ placeholder }: ChatInputProps) => {
   const [editorKey, setEditorKey] = useState(0);
   const [isPending, setIsPending] = useState(false);
   const ref = useRef<Quill | null>(null);

@@ -22,9 +22,9 @@ type MessageListProps = {
   isLoadingMore: boolean;
 };
 
-const TIME_THRESHOLD = 5;
+export const TIME_THRESHOLD = 5;
 
-function formatDateLabel(datestring: string) {
+export function formatDateLabel(datestring: string) {
   const date = new Date(datestring);
   if (isToday(date)) return "Today";
   if (isYesterday(date)) return "Yesterday";
@@ -38,8 +38,8 @@ export default function MessageList({
   loadMore,
   channelCreationTime,
   channelName,
-  memberImage,
-  memberName,
+  // memberImage,
+  // memberName,
   variant = "channel",
 }: MessageListProps) {
   const [editingId, setEditingId] = useState<Id<"messages"> | null>(null);

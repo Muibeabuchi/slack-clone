@@ -31,7 +31,7 @@ interface EditorProps {
   onSubmit: ({ image, body }: EditorValue) => void;
   onCancel?: () => void;
   placeholder?: string;
-  defaultValue: Delta | Op[];
+  defaultValue?: Delta | Op[];
   disabled?: boolean;
   innerRef?: MutableRefObject<Quill | null>;
 }
@@ -88,6 +88,10 @@ const Editor = ({
         theme: "snow",
         placeholder: placeholderRef.current,
         modules: {
+          toolbar: [
+            ["bold", "italic", "underline", "strike"],
+            [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
+          ],
           // "image-tooltip": false,
           keyboard: {
             bindings: {

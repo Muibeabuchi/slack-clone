@@ -23,12 +23,12 @@ export const getById = query({
 
     if (!currentMember) return null;
 
-    const user = await populateUser(ctx, currentMember.userId);
+    const user = await populateUser(ctx, member.userId);
     if (!user) return null;
 
     return {
       ...member,
-      ...user,
+      user,
     };
   },
 });

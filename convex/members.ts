@@ -27,7 +27,7 @@ export const getById = query({
     if (!user) return null;
 
     return {
-      ...currentMember,
+      ...member,
       ...user,
     };
   },

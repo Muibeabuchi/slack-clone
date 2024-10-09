@@ -1,13 +1,13 @@
 import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { useCallback, useMemo, useState } from "react";
-import { Doc, Id } from "../../../../convex/_generated/dataModel";
+import { Id } from "../../../../convex/_generated/dataModel";
 
 type RequestType = {
   workspaceId: Id<"workspaces">;
   memberId: Id<"members">;
 };
-type ResponseType = Doc<"conversations"> | null;
+type ResponseType = Id<"conversations"> | null;
 
 type Options = {
   onSuccess?: (data: ResponseType) => void;
@@ -16,7 +16,7 @@ type Options = {
   throwError?: boolean;
 };
 
-export const useCreateMessage = () => {
+export const useCreateOrGetConversation = () => {
   const mutation = useMutation(api.conversations.createOrGet);
 
   const [data, setData] = useState<ResponseType>(null);
@@ -37,7 +37,7 @@ export const useCreateMessage = () => {
   // const [isSuccess, setIsSuccess] = useState(false);
 
   const mutate = useCallback(
-    async (values: RequestType, options: Options) => {
+    async (values: RequestType, options?: Options) => {
       setData(null);
       setError(null);
       setStatus("pending");

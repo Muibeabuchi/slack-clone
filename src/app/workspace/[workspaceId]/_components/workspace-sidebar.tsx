@@ -19,6 +19,7 @@ import { WorkspaceSection } from "./workspace-section";
 import UserItem from "./user-item";
 import { useCreateChannelModal } from "@/features/channels/store/use-create-channel-modal";
 import useChannelId from "@/hooks/use-channel-id";
+import useMemberId from "@/hooks/use-member-id ";
 
 export default function WorkspaceSidebar({
   channelsPreloadQuery,
@@ -29,6 +30,7 @@ export default function WorkspaceSidebar({
 }) {
   const channelId = useChannelId();
   const workspaceId = useWorkspaceId();
+  const memberId = useMemberId();
 
   // ?preload channels data from the server
   const channels = usePreloadedQuery(channelsPreloadQuery);
@@ -107,7 +109,7 @@ export default function WorkspaceSidebar({
             image={item.userData?.image}
             key={item._id}
             label={item.userData?.name}
-            // variant={"active"}
+            variant={memberId === item._id ? "active" : "default"}
           />
         ))}
       </WorkspaceSection>

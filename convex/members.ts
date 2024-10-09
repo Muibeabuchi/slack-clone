@@ -14,11 +14,20 @@ export const getById = query({
     const member = await ctx.db.get(args.memberId);
     if (!member) return null;
 
-    const user = await populateUser(ctx, member.userId);
+    const currentMember = await ctx.db
+      .query("members")
+      .withIndex("by_workspace_id_user_id", (q) =>
+        q.eq("workspaceId", member.workspaceId).eq("userId", userId)
+      )
+      .unique();
+
+    if (!currentMember) return null;
+
+    const user = await populateUser(ctx, currentMember.userId);
     if (!user) return null;
 
     return {
-      ...member,
+      ...currentMember,
       ...user,
     };
   },

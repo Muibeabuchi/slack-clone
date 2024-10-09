@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useWorkspaceId } from "@/hooks/use-workspace-id";
 import useCurrentMember from "@/features/members/api/use-current-member";
 import { Loader } from "lucide-react";
+import { ConversationHero } from "./conversation-hero";
 
 type MessageVariant = "channel" | "conversation" | "thread";
 
@@ -38,12 +39,11 @@ export default function MessageList({
   loadMore,
   channelCreationTime,
   channelName,
-  // memberImage,
-  // memberName,
+  memberImage,
+  memberName,
   variant = "channel",
 }: MessageListProps) {
   const [editingId, setEditingId] = useState<Id<"messages"> | null>(null);
-
   const workspaceId = useWorkspaceId();
   const { data: currentMember } = useCurrentMember({ workspaceId });
 
@@ -132,6 +132,9 @@ export default function MessageList({
       )}
       {variant === "channel" && channelName && channelCreationTime ? (
         <ChannelHero name={channelName} creationTime={channelCreationTime} />
+      ) : null}
+      {variant === "conversation" ? (
+        <ConversationHero name={memberName} image={memberImage || ""} />
       ) : null}
     </div>
   );

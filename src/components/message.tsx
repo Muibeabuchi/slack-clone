@@ -14,6 +14,7 @@ import { useConfirm } from "@/hooks/use-confirm";
 import { useToggleReactions } from "@/features/messages/api/use-toggle-reactions";
 import { Reactions } from "./reactions";
 import { usePanel } from "@/hooks/use-panel";
+import { ThreadBar } from "./threads-bar";
 
 const Renderer = dynamic(() => import("@/components/renderer"), {
   ssr: false,
@@ -42,6 +43,7 @@ interface MessageProps {
   setEditingId: (id: Id<"messages"> | null) => void;
   hideThreadCount?: boolean;
   threadCount?: number;
+  threadName?: string;
   isEditing: boolean;
   hideThreadButton: boolean;
   threadImage?: string;
@@ -58,16 +60,17 @@ export const Message = ({
   id,
   image,
   isAuthor,
-  memberId,
+  // memberId,
   reactions,
   updatedAt,
   authorImage,
   authorName = "Member",
   // hideThreadCount,
+  threadName,
   isCompact,
-  // threadCount,
-  // threadImage,
-  // threadTimeStamp,
+  threadCount,
+  threadImage,
+  threadTimeStamp,
   hideThreadButton,
   isEditing,
   setEditingId,
@@ -174,6 +177,13 @@ export const Message = ({
                   <span className="text-xs text-muted-foregrund">(edited)</span>
                 ) : null}
                 <Reactions data={reactions} onChange={handleReaction} />
+                <ThreadBar
+                  onClick={() => onOpenMessage(id)}
+                  image={threadImage}
+                  count={threadCount}
+                  timestamp={threadTimeStamp}
+                  name={threadName}
+                />
               </div>
             )}
           </div>
@@ -248,6 +258,13 @@ export const Message = ({
                 <span className="text-xs text-muted-foreground">(edited)</span>
               ) : null}
               <Reactions data={reactions} onChange={handleReaction} />
+              <ThreadBar
+                image={threadImage}
+                count={threadCount}
+                name={threadName}
+                timestamp={threadTimeStamp}
+                onClick={() => onOpenMessage(id)}
+              />
             </div>
           )}
         </div>

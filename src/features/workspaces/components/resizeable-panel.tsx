@@ -10,6 +10,7 @@ import { Loader } from "lucide-react";
 import { ReactNode } from "react";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { Threads } from "@/features/messages/components/Threads";
+import { Profile } from "@/features/members/components/profile";
 
 interface ResizeablePanelProps {
   children: ReactNode;
@@ -25,8 +26,9 @@ export default function ResizeableSidebar({
   const onLayout = (sizes: number[]) => {
     document.cookie = `react-resizable-panels:layout=${JSON.stringify(sizes)}`;
   };
-  const { parentMessageId, onClose } = usePanel();
-  const showPanel = !!parentMessageId;
+  const { parentMessageId, onClose, profileMemberId } = usePanel();
+
+  const showPanel = !!parentMessageId || !!profileMemberId;
 
   return (
     <ResizablePanelGroup
@@ -57,6 +59,11 @@ export default function ResizeableSidebar({
             {parentMessageId ? (
               <Threads
                 messageId={parentMessageId as Id<"messages">}
+                onClose={onClose}
+              />
+            ) : profileMemberId ? (
+              <Profile
+                memberId={profileMemberId as Id<"members">}
                 onClose={onClose}
               />
             ) : (

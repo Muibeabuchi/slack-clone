@@ -147,7 +147,7 @@ export const Threads = ({ messageId, onClose }: ThreadsProps) => {
 
   if (!message) {
     return (
-      <div className="flex flex-col h-ful">
+      <div className="flex flex-col h-full">
         <div className="flex justify-between items-center p-2 border-b">
           <p className="text-lg font-bold">Thread</p>
           <Button onClick={onClose} size="iconSm" variant="ghost">

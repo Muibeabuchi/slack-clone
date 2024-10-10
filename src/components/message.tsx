@@ -60,11 +60,12 @@ export const Message = ({
   id,
   image,
   isAuthor,
-  // memberId,
+  memberId,
   reactions,
   updatedAt,
   authorImage,
   authorName = "Member",
+  // ? When do we hide the count?
   // hideThreadCount,
   threadName,
   isCompact,
@@ -85,13 +86,17 @@ export const Message = ({
     useUpdateMessage();
   const { mutate: removeMessage, isPending: removingMessage } =
     useRemoveMessage();
+  const { mutate: toggleReaction, isPending: isTogglingReaction } =
+    useToggleReactions();
   const {
-    mutate: toggleReaction,
-    // isPending: isTogglingReaction
-  } = useToggleReactions();
-  const { onOpenMessage, onClose, parentMessageId } = usePanel();
+    onOpenMessage,
+    onClose,
+    parentMessageId,
+    onOpenProfileMember,
+    // profileMemberId,
+  } = usePanel();
 
-  const isUpdating = updatingMessage;
+  const isUpdating = updatingMessage || isTogglingReaction;
 
   const handleReaction = (value: string) => {
     toggleReaction(
@@ -215,7 +220,7 @@ export const Message = ({
         )}
       >
         <div className="flex items-start gap-2">
-          <button>
+          <button onClick={() => onOpenProfileMember(memberId)}>
             <Avatar className=" rounded-md">
               <AvatarImage className="rounded-md" src={authorImage} />
               <AvatarFallback className="rounded-md bg-sky-500 text-white">
@@ -238,16 +243,13 @@ export const Message = ({
               <div className="text-sm">
                 <button
                   className="font-bold hover:underline text-primary"
-                  onClick={() => {}}
+                  onClick={() => onOpenProfileMember(memberId)}
                 >
                   {authorName}
                 </button>
                 <span>&nbsp;&nbsp;</span>
                 <Hint label={formatFullTime(new Date(createdAt))}>
-                  <button
-                    className="text-xs hover:underline text-muted-foreground"
-                    //   onClick={() => {}}
-                  >
+                  <button className="text-xs hover:underline text-muted-foreground">
                     {format(new Date(createdAt), "h:mm a")}
                   </button>
                 </Hint>

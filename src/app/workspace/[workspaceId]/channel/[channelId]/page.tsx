@@ -14,7 +14,6 @@ const ChannelIdPage = () => {
   // write effect that checks if there an admin is on a workspace page with no channel and open the create channel modal
   const channelId = useChannelId();
   const { results, status, loadMore } = useGetMessages({ channelId });
-  console.log(results);
   const { data: channel, isLoading: channelLoading } = UseGetChannelById({
     channelId,
   });

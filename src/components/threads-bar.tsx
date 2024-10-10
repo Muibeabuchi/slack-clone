@@ -17,7 +17,6 @@ export const ThreadBar = ({
   timestamp,
   name,
 }: ThreadBarProps) => {
-  console.log(name);
   const avatarFallback = name?.charAt(0).toUpperCase();
   if (!count || !timestamp) return null;
 

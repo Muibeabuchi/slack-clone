@@ -25,7 +25,7 @@ export default function ResizeableSidebar({
   const onLayout = (sizes: number[]) => {
     document.cookie = `react-resizable-panels:layout=${JSON.stringify(sizes)}`;
   };
-  const { parentMessageId, onCloseMessage } = usePanel();
+  const { parentMessageId, onClose } = usePanel();
   const showPanel = !!parentMessageId;
 
   return (
@@ -57,7 +57,7 @@ export default function ResizeableSidebar({
             {parentMessageId ? (
               <Threads
                 messageId={parentMessageId as Id<"messages">}
-                onClose={onCloseMessage}
+                onClose={onClose}
               />
             ) : (
               <div className="flex items-center justify-center h-full w-full">

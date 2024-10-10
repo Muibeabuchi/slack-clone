@@ -15,8 +15,6 @@ import WorkspaceSidebar from "./_components/workspace-sidebar";
 
 import ResizeableSidebar from "@/features/workspaces/components/resizeable-panel";
 
-// import { usePanel } from "@/hooks/use-panel";
-
 interface WorkspaceLayoutProps {
   children: React.ReactNode;
   params: {

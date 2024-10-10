@@ -89,7 +89,7 @@ export const Message = ({
     mutate: toggleReaction,
     // isPending: isTogglingReaction
   } = useToggleReactions();
-  const { onOpenMessage, onCloseMessage, parentMessageId } = usePanel();
+  const { onOpenMessage, onClose, parentMessageId } = usePanel();
 
   const isUpdating = updatingMessage;
 
@@ -131,7 +131,7 @@ export const Message = ({
         onSuccess: () => {
           toast.success("Messaged deleted");
           if (parentMessageId === id) {
-            onCloseMessage();
+            onClose();
           }
         },
         onError: () => {

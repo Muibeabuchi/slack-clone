@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import { Button } from "./ui/button";
 import Hint from "./hint";
-import EmojiPicker from "./emoji-picker";
+import EmojiPicker from "./emoji-popover";
 
 interface ToolbarProps {
   isAuthor: boolean;

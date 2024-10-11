@@ -21,7 +21,7 @@ import React, {
 import { PiTextAa } from "react-icons/pi";
 import { MdSend } from "react-icons/md";
 import { cn } from "@/lib/utils";
-import EmojiPicker from "./emoji-picker";
+import EmojiPopover from "./emoji-popover";
 import Image from "next/image";
 
 type EditorValue = { image: File | null; body: string };
@@ -230,11 +230,11 @@ const Editor = ({
               <PiTextAa className="size-4" />
             </Button>
           </Hint>
-          <EmojiPicker onEmojiSelect={onEmojiSelect}>
+          <EmojiPopover onEmojiSelect={onEmojiSelect}>
             <Button disabled={disabled} size={"iconSm"} variant={"ghost"}>
               <SmileIcon className="size-4" />
             </Button>
-          </EmojiPicker>
+          </EmojiPopover>
           {variant === "create" ? (
             <Hint label="image">
               <Button

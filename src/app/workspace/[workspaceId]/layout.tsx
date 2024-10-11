@@ -62,7 +62,11 @@ const WorkspaceLayout = async ({
   if (!workspace) redirect("/");
   return (
     <div className="">
-      <Toolbar workspaceName={workspace.name} />
+      <Toolbar
+        workspaceName={workspace.name}
+        membersPreloadQuery={membersPreloadQuery}
+        channelsPreloadQuery={channelsPreloadQuery}
+      />
       <div className="flex h-[calc(100vh-40px)]">
         <Sidebar>
           <WorkspaceSwitcher workspace={workspace} />

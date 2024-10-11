@@ -1,13 +1,14 @@
 import { useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { useCallback, useMemo, useState } from "react";
-import { Id } from "../../../../convex/_generated/dataModel";
+import { Doc, Id } from "../../../../convex/_generated/dataModel";
 
 type RequestType = {
   workspaceId: Id<"workspaces">;
   memberId: Id<"members">;
+  role: "admin" | "member";
 };
-type ResponseType = Id<"members"> | null;
+type ResponseType = Doc<"members"> | null;
 
 type Options = {
   onSuccess?: (data: ResponseType) => void;

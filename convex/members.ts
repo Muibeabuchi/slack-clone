@@ -88,7 +88,11 @@ export const workspaceMembers = query({
 });
 
 export const update = mutation({
-  args: { memberId: v.id("members"), workspaceId: v.id("workspaces") },
+  args: {
+    memberId: v.id("members"),
+    workspaceId: v.id("workspaces"),
+    role: v.union(v.literal("admin"), v.literal("member")),
+  },
   async handler(ctx, args) {
     // check if the user is authenticated
     const userId = await getAuthUserId(ctx);
@@ -102,7 +106,7 @@ export const update = mutation({
     const workspaceMember = await ctx.db
       .query("members")
       .withIndex("by_workspace_id_user_id", (q) =>
-        q.eq("workspaceId", member.workspaceId).eq("userId", userId)
+        q.eq("workspaceId", member.workspaceId).eq("userId", member.userId)
       )
       .unique();
 
@@ -121,10 +125,10 @@ export const update = mutation({
       throw new ConvexError("Unauthorized");
 
     await ctx.db.patch(workspaceMember._id, {
-      role: workspaceMember.role === "member" ? "admin" : "member",
+      role: args.role,
     });
 
-    return workspaceMember._id;
+    return workspaceMember;
   },
 });
 
@@ -140,10 +144,11 @@ export const remove = mutation({
     if (!member) throw new ConvexError("Member does not exist");
 
     // check if the member is a part of the workspace
+
     const workspaceMember = await ctx.db
       .query("members")
       .withIndex("by_workspace_id_user_id", (q) =>
-        q.eq("workspaceId", member.workspaceId).eq("userId", userId)
+        q.eq("workspaceId", args.workspaceId).eq("userId", member.userId)
       )
       .unique();
 
@@ -166,7 +171,7 @@ export const remove = mutation({
 
     // ensure member cannot delete themselves
     const isSelf = workspaceMember._id === currentMember._id;
-    if (isSelf && currentMember.role !== "admin")
+    if (isSelf && currentMember.role !== "member")
       throw new ConvexError("Cannot remove self if is an admin");
 
     // clean up all the messages,conversations and reactions this member has made in the workspace

@@ -147,12 +147,51 @@ export const remove = mutation({
       .withIndex("by_workspace_id", (q) => q.eq("workspaceId", workspaceId))
       .collect();
 
+    // query for all channels in the workspace
+    const workspaceChannels = await ctx.db
+      .query("channels")
+      .withIndex("by_workspaceId", (q) => q.eq("workspaceId", workspaceId))
+      .collect();
+
+    // query for all conversations in the workspace
+    const workspaceConversations = await ctx.db
+      .query("conversations")
+      .withIndex("by_workspace_id", (q) => q.eq("workspaceId", workspaceId))
+      .collect();
+
+    // query for all messages in the workspace
+    const workspaceMessages = await ctx.db
+      .query("messages")
+      .withIndex("by_workspace_id", (q) => q.eq("workspaceId", workspaceId))
+      .collect();
+
+    // query for all messages in the workspace
+    const workspaceReactions = await ctx.db
+      .query("reactions")
+      .withIndex("by_workspace_id", (q) => q.eq("workspaceId", workspaceId))
+      .collect();
+
     // delete all associated members in this workspace
-    await Promise.all(
+    // delete all associated channels in the workspace
+    // delete all associated conversations in the workspace
+    // delete all associated messages in the workspace
+    await Promise.all([
       workspaceMembers.map(async (member) => {
         await ctx.db.delete(member._id);
-      })
-    );
+      }),
+      workspaceChannels.map(async (channel) => {
+        await ctx.db.delete(channel._id);
+      }),
+      workspaceConversations.map(async (conversation) => {
+        await ctx.db.delete(conversation._id);
+      }),
+      workspaceMessages.map(async (messages) => {
+        await ctx.db.delete(messages._id);
+      }),
+      workspaceReactions.map(async (reactions) => {
+        await ctx.db.delete(reactions._id);
+      }),
+    ]);
 
     return workspaceId;
   },

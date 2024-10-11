@@ -145,7 +145,16 @@ export const remove = mutation({
     if (!isMember || isMember.role === "member")
       throw new ConvexError("Unauthorized");
 
-    // TODO: remove associated messages
+    const [messages] = await Promise.all([
+      ctx.db
+        .query("messages")
+        .withIndex("by_channel_id", (q) => q.eq("channelId", channelId))
+        .collect(),
+    ]);
+
+    for (const message of messages) {
+      await ctx.db.delete(message._id);
+    }
 
     // delete new channelName into the workspace
     await ctx.db.delete(channelId);

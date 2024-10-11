@@ -23,6 +23,7 @@ import { MdSend } from "react-icons/md";
 import { cn } from "@/lib/utils";
 import EmojiPopover from "./emoji-popover";
 import Image from "next/image";
+// import { type EmojiClickData } from "emoji-picker-react";
 
 type EditorValue = { image: File | null; body: string };
 
@@ -164,10 +165,9 @@ const Editor = ({
     const toolBarElement = containerRef.current?.querySelector(".ql-toolbar");
     if (toolBarElement) toolBarElement.classList.toggle("hidden");
   };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onEmojiSelect = (emoji: any) => {
+  const onEmojiSelect = (emojiValue: string) => {
     const quill = quillRef.current;
-    quill?.insertText(quill.getSelection()?.index || 0, emoji?.native);
+    quill?.insertText(quill.getSelection()?.index || 0, emojiValue);
   };
 
   return (
@@ -230,7 +230,7 @@ const Editor = ({
               <PiTextAa className="size-4" />
             </Button>
           </Hint>
-          <EmojiPopover onEmojiSelect={onEmojiSelect}>
+          <EmojiPopover onEmojiSelect={(emoji) => onEmojiSelect(emoji)}>
             <Button disabled={disabled} size={"iconSm"} variant={"ghost"}>
               <SmileIcon className="size-4" />
             </Button>

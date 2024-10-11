@@ -30,7 +30,7 @@ export const Toolbar = ({
   return (
     <div className="absolute top-0 right-5">
       <div className="group-hover:opacity-100 transition-opacity border bg-white rounded-md shadow-sm opacity-0">
-        <EmojiPicker onEmojiSelect={(emoji) => handleReaction(emoji.native)}>
+        <EmojiPicker onEmojiSelect={(emoji) => handleReaction(emoji)}>
           <Button variant="ghost" disabled={isPending} size={"iconSm"}>
             <Smile className="size-4" />
           </Button>
